@@ -1,0 +1,27 @@
+.userItem {
+    display: flex;
+    align-items: center;
+    padding-bottom: 11px;
+}
+
+.userItem .profileImage img {
+    border-radius: 50%;
+    background-color: grey;
+    width: 29px;
+    height: 29px;
+    display:inline-block;
+    margin-top: 5px;
+}
+
+.userItem .detailContainer {
+    padding-left: 11px;
+}
+
+.userItem .username {
+    font-size: 18px;
+}
+
+.userItem .address {
+    font-size: 12px;
+    font-family: 'Courier New', Courier, monospace;
+}
