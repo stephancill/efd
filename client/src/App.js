@@ -5,11 +5,19 @@ import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
 import Nav from "./Nav"
 import UserList from "./UserList"
+import User from "./User"
+import HeaderUser from "./HeaderUser"
+
+var testUser = {ens: "hello.eth", address: "0xbF6aE81C7f53A19246174bB18464Ca26f0b2A2BE", friends: [
+    "0xbF6aE81C7f53A19246174bB18464Ca26f0b2A2B6",
+    "0x12F904C8721f2E93825cbE91c1aB08f5656Ab5DF",
+    "0x12F904C8721f2E93825cbE91c1aB08f5656Ab5DD"
+]} 
 
 var testUsers = [
-    {ens: "hello.eth", address: "0xbF6aE81C7f53A19246174bB18464Ca26f0b2A2B6"}, 
-    {ens: "hehehe.eth", address: "0x12F904C8721f2E93825cbE91c1aB08f5656Ab5DF"},
-    {ens: "stephan.eth", address: "0x12F904C8721f2E93825cbE91c1aB08f5656Ab5DD", profileImage: "https://avatars.githubusercontent.com/u/5469870?v=4"}
+    {ens: "hello.eth", address: "0xbF6aE81C7f53A19246174bB18464Ca26f0b2A2B6", friends: []}, 
+    {ens: "hehehe.eth", address: "0x12F904C8721f2E93825cbE91c1aB08f5656Ab5DF", friends: []},
+    {ens: "stephan.eth", address: "0x12F904C8721f2E93825cbE91c1aB08f5656Ab5DD", profileImage: "https://avatars.githubusercontent.com/u/5469870?v=4", friends: []}
 ]
 
 class App extends Component {
@@ -161,7 +169,16 @@ class App extends Component {
         return (<div className="App">
             <Nav></Nav>
             <div style={{display: "flex", justifyContent: "center"}}>
-                <UserList title="Friends" users={testUsers}></UserList>
+                <div style={{marginTop: "50px"}}>
+                    <div style={{display: "flex", justifyContent: "center"}}>
+                        <div style={{marginLeft: "-40px"}}>
+                            <HeaderUser user={testUser} currentUser={testUser}></HeaderUser>
+                        </div>
+                    </div>
+                    
+                    <UserList title="Friends" users={testUsers}></UserList>
+                </div>
+                
             </div>
             
             {/* <h2>Vyper Storage Contract</h2>
