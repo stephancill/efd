@@ -1,6 +1,6 @@
-# Brownie React Mix
+# Ethereum Friend Directory
 
-This mix comes with everything you need to start using [React](https://reactjs.org/) with a Brownie project.
+Ethereum Friend Directory (EFD for short) is a blockchain-based graph which allows users to maintain a list of friend accounts. This allows you to take your contact list with you wherever you go on the decentralized web and also serves as a layer of proof of humanity. 
 
 ## Installation
 
