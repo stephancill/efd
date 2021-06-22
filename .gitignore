@@ -5,3 +5,7 @@ __pycache__
 .hypothesis/
 client/src/artifacts
 reports/
+node_modules
+*.dbg.json
+artifacts/
+*cache.*
