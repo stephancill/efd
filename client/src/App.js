@@ -7,6 +7,7 @@ import Nav from "./Nav"
 import UserList from "./UserList"
 import User from "./User"
 import HeaderUser from "./HeaderUser"
+require("eth-ens-namehash")
 
 var testUser = {ens: "hello.eth", address: "0xbF6aE81C7f53A19246174bB18464Ca26f0b2A2BE", friends: [
     "0xbF6aE81C7f53A19246174bB18464Ca26f0b2A2B6",
@@ -32,6 +33,9 @@ class App extends Component {
         solidityStorage: null,
         solidityValue: 0,
         solidityInput: 0,
+        efd: null,
+        listUsers: testUsers,
+        currentUser: testUser
     }
 
     componentDidMount = async () => {
@@ -50,21 +54,25 @@ class App extends Component {
         }
 
         // Use web3 to get the user's accounts
-        // const accounts = await web3.eth.getAccounts()
+        const accounts = await web3.eth.getAccounts()
 
         // Get the current chain id
         const chainid = parseInt(await web3.eth.getChainId())
 
-        // this.setState({
-        //     web3,
-        //     accounts,
-        //     chainid
-        // }, await this.loadInitialContracts)
-
         this.setState({
             web3,
+            accounts,
             chainid
-        })
+        }, await this.loadInitialContracts)
+
+        await this.updateUserList()
+
+    }
+
+    updateUserList = async () => {
+        // TODO: Resolve users
+        const allnames = await ReverseRecords.getNames(this.state.listUsers.map(u => u.address))
+        const validNames = allnames.filter((n) => namehash.normalize(n) === n )
 
     }
 
@@ -74,21 +82,19 @@ class App extends Component {
             return
         }
 
-        const vyperStorage = await this.loadContract("dev", "VyperStorage")
-        const solidityStorage = await this.loadContract("dev", "SolidityStorage")
+        const efd = await this.loadContract(this.state.chainid, "EthereumFriendDirectory")
+        // const vyperStorage = await this.loadContract("dev", "VyperStorage")
+        // const solidityStorage = await this.loadContract("dev", "SolidityStorage")
 
-        if (!vyperStorage || !solidityStorage) {
+        if (!efd) {
             return
         }
 
-        const vyperValue = await vyperStorage.methods.get().call()
-        const solidityValue = await solidityStorage.methods.get().call()
+        // const vyperValue = await vyperStorage.methods.get().call()
+        // const solidityValue = await solidityStorage.methods.get().call()
 
         this.setState({
-            vyperStorage,
-            vyperValue,
-            solidityStorage,
-            solidityValue,
+            efd
         })
     }
 
@@ -108,7 +114,7 @@ class App extends Component {
         // Load the artifact with the specified address
         let contractArtifact
         try {
-            contractArtifact = await import(`./artifacts/deployments/${chain}/${address}.json`)
+            contractArtifact = await import(`./artifacts/contracts/${contractName}.sol/${contractName}.json`)
         } catch (e) {
             console.log(`Failed to load contract artifact "./artifacts/deployments/${chain}/${address}.json"`)
             return undefined
