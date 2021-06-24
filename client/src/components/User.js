@@ -7,8 +7,7 @@ function truncateAddress(address) {
     return `${address.slice(0,6)}...${address.slice(address.length-4,address.length)}`
 }
 
-function User(props) {
-    const user = props.user
+function User({user}) {
 
     var iconURL = createIcon({
         seed: user.address,

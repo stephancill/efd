@@ -31,6 +31,9 @@ Requests are created and accepted off-chain. This is the most cost-effective way
         - [ ] Route to sign request to accept
         - [ ] Route to publish friend confirmation
     - [ ] View other accounts
+- [ ] Testing
+    - [x] Create ENS task
+    - [ ] Set profile image
 - [ ] Deploy
 
 Reach out on Twitter [@stephancill](https://twitter.com/stephancill) if you'd like to help out or make a PR.

@@ -1,27 +1,28 @@
 import React from "react"
-import logo from "./logo.svg"
+import logo from "./../logo.svg"
 
-function Nav(props) {
+export function Nav({connectWallet, selectedAddress, onSearchSubmit, onSearchChange, searchQuery}) {
   return <nav>
     <div style={{textAlign: "left"}} className="navLogo">
       <a href="/"><img src={logo} alt="EFD" /></a>
     </div>
+
+
     <div style={{textAlign: "center"}} className="search">
-      <input placeholder="Search address/ENS"></input>
+      <form onSubmit={onSearchSubmit}>
+        <input placeholder="Search address/ENS" value={searchQuery} onChange={onSearchChange}></input>
+      </form>
     </div>
 
     {
-      props.currentUser ?
+      selectedAddress ?
       <div style={{textAlign: "right"}} className="userItem">
-        <div>{props.currentUser}</div>
+        <div>{selectedAddress}</div>
       </div> :
       <div style={{textAlign: "right"}} className="connectButton">
-        <button>Connect</button>
+        <button onClick={connectWallet}>Connect</button>
       </div>
-      
     }
     
   </nav>;
 }
-
-export default Nav

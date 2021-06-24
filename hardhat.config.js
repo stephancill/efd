@@ -1,4 +1,5 @@
 require("@nomiclabs/hardhat-waffle");
+require("hardhat-dependency-compiler");
 
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -30,10 +31,24 @@ module.exports = {
       {
         version: "0.8.0",
         settings: { } 
-      }
+      },
+      {
+        version: "0.7.0"
+      },
+      {
+        version: "0.7.4"
+      },
     ]
   },
   paths: {
     artifacts: "./client/src/artifacts"
   },
+  dependencyCompiler: {
+    paths: [
+      "@ensdomains/ens/contracts/ENSRegistry.sol",
+      "@ensdomains/ens/contracts/ReverseRegistrar.sol",
+      "@ensdomains/resolver/contracts/PublicResolver.sol",
+      "@ensdomains/reverse-records/contracts/ReverseRecords.sol",
+    ],
+  }
 }

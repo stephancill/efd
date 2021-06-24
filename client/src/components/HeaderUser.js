@@ -2,8 +2,8 @@ import React from "react"
 import User from "./User"
 import "./HeaderUser.css"
 
-function HeaderUser(props) {
-    const user = props.user
+function HeaderUser({displayedAddress, selectedAddress}) {
+    const user = {address: displayedAddress, ens: "", friends: []}
     const mutuals = []
     return <div>
         <User user={user}></User>

@@ -1,4 +1,4 @@
-const { network } = require("hardhat")
+const { network, ethers } = require("hardhat")
 const web3 = require("web3")
 
 async function main() {
@@ -24,12 +24,14 @@ async function main() {
   
 }
 
+// https://medium.com/the-ethereum-name-service/adding-ens-into-your-dapp-72eb6deac26b
 async function deployENS() {
   const [deployer] = await ethers.getSigners()
 
-  const ENS = ethers.ContractFactory.fromSolidity(require('@ensdomains/ens/build/contracts/ENSRegistry.json'), deployer)
-  const PublicResolver = ethers.ContractFactory.fromSolidity(require('@ensdomains/resolver/build/contracts/PublicResolver.json'), deployer)
-  const ReverseRegistrar = ethers.ContractFactory.fromSolidity(require('@ensdomains/ens/build/contracts/ReverseRegistrar.json'), deployer)
+  const ENS = await ethers.getContractFactory("ENSRegistry", deployer)
+  const PublicResolver = await ethers.getContractFactory("PublicResolver", deployer)
+  const ReverseRegistrar = await ethers.getContractFactory("ReverseRegistrar", deployer)
+  const ReverseRecords = await ethers.getContractFactory("ReverseRecords", deployer)
 
   const namehash = require('eth-ens-namehash')
 
@@ -44,6 +46,10 @@ async function deployENS() {
   const reverseRegistrar = await ReverseRegistrar.deploy(ens.address, publicResolver.address)
   await reverseRegistrar.deployed()
   saveDeployment(reverseRegistrar, "ReverseRegistrar")
+
+  const reverseRecords = await ReverseRecords.deploy(ens.address)
+  await reverseRecords.deployed()
+  saveDeployment(reverseRecords, "ReverseRecords")
 
   const connectedENS = ens.connect(deployer)
   const zeroBytes = ethers.utils.zeroPad(0, 32)
