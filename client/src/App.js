@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import './App.css'
 import {getWeb3} from "./getWeb3"
-import map from "./artifacts/deployments/map.json"
+import map from "./deployments/map.json"
 import {getEthereum} from "./getEthereum"
 import Nav from "./Nav"
 import UserList from "./UserList"
