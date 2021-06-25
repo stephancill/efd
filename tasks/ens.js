@@ -11,20 +11,20 @@ async function registerENS(name, address, network) {
   let hashedname = namehash.hash(`${name}.eth`)
 
   let accounts = await ethers.getSigners()
-  
-  console.log(accounts.map(a => a.address))
 
-  // TODO: Fix only first user able to register ENS
-  let potentialOwners = accounts.filter(a => a.address == address)
   let owner = accounts[0]
-  if (potentialOwners.length > 0) {
-    owner = potentialOwners[0]
-    console.log("Updated owner")
+
+  let potentialUsers = accounts.filter(a => a.address.toLowerCase() == address.toLowerCase())
+  let user = accounts[0]
+  if (potentialUsers.length > 0) {
+    user = potentialUsers[0]
   } 
 
-  let ens = await contractFromMap("ENS", "ENSRegistry", network, owner)
+  // New names have to be registered by owner of tld
+  let ens = await contractFromMap("ENS", "ENSRegistry", network, owner) 
   let resolver = await contractFromMap("PublicResolver", "PublicResolver", network, owner)
-  let reverseResolver = await contractFromMap("ReverseRegistrar", "ReverseRegistrar", network, owner)
+  // Reverse record can be set by the record owner
+  let reverseResolver = await contractFromMap("ReverseRegistrar", "ReverseRegistrar", network, user)
 
   await ens.setSubnodeOwner(namehash.hash(tld), web3.utils.sha3(name), owner.address)
   await ens.setResolver(hashedname, resolver.address)
