@@ -7,6 +7,8 @@ const { ethers, artifacts } = require("hardhat")
 
 async function registerENS(name, address, network) {
 
+  console.log("Registering", name, address)
+
   let tld = "eth"
   let hashedname = namehash.hash(`${name}.eth`)
 
@@ -18,7 +20,9 @@ async function registerENS(name, address, network) {
   let user = accounts[0]
   if (potentialUsers.length > 0) {
     user = potentialUsers[0]
-  } 
+  } else {
+    console.error("Account not found")
+  }
 
   // New names have to be registered by owner of tld
   let ens = await contractFromMap("ENS", "ENSRegistry", network, owner) 

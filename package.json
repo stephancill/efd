@@ -5,7 +5,8 @@
   "license": "MIT",
   "dependencies": {
     "@ensdomains/reverse-records": "https://github.com/ensdomains/reverse-records",
-    "@openzeppelin/contracts": "^4.1.0"
+    "@openzeppelin/contracts": "^4.1.0",
+    "casual": "^1.6.2"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",

@@ -19,6 +19,28 @@ task("ens", "Registers and ENS handle")
     await require("./tasks/ens").registerENS(args.name, args.address, hre.network)
   });
 
+task("befriend", "Befriends 2 addresses")
+  .addParam("address1", "The desired ENS domain")
+  .addParam("address2", "The resolution address")
+  .setAction(async (params, hre) => {
+    const accounts = await hre.ethers.getSigners()
+    const account1 = accounts.find(a => a.address == params.address1)
+    const account2 = accounts.find(a => a.address == params.address2)
+    await require("./tasks/efd").addFriend(account1, account2)
+  });
+
+task("friends", "Get friends for address")
+  .addParam("address", "The address to display friends of")
+  .setAction(async (params, hre) => {
+    const friends = await require("./tasks/efd").getFriends(params.address)
+    console.log(friends)
+  });
+
+task("graph", "Reserves ENS names and creates a random EFS graph")
+  .setAction(async () => {
+    await require("./tasks/graph").randomGraph()
+  });
+
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
@@ -26,6 +48,7 @@ task("ens", "Registers and ENS handle")
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
+  defaultNetwork: "localhost",
   solidity: {
     compilers: [
       {
