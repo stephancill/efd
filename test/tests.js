@@ -23,8 +23,8 @@ describe("EFD", function() {
     const accounts = await ethers.getSigners();
     const efd = await deployContract()
 
-    const senderSignature = await createRequest(accounts[0], accounts[1].address)
-    const acceptSignature = await acceptRequest(accounts[0].address, accounts[1], senderSignature)
+    let senderSignature = await createRequest(accounts[0], accounts[1].address)
+    let acceptSignature = await acceptRequest(accounts[0].address, accounts[1], senderSignature)
 
     await efd.connect(accounts[0]).confirmRequest(accounts[0].address, accounts[1].address, senderSignature, acceptSignature)
 
@@ -39,7 +39,13 @@ describe("EFD", function() {
     expect(length).to.equal(adj.length)
     expect(length).to.equal(1)
     expect(adj[0]).to.equal(accounts[0].address)
-  });
 
+
+    // Exceptions
+    senderSignature = await createRequest(accounts[0], accounts[0].address)
+    acceptSignature = await acceptRequest(accounts[0].address, accounts[0], senderSignature)
+    const tx = efd.connect(accounts[0]).confirmRequest(accounts[0].address, accounts[0].address, senderSignature, acceptSignature)
+    await expect(tx).to.be.revertedWith("Addresses cannot be the same")
+  });
 
 });
