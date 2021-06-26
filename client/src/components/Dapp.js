@@ -46,10 +46,10 @@ export class Dapp extends React.Component {
     super(props);
 
     this.initialState = {
-      efs: undefined,
+      efd: undefined,
       reverseRecords: undefined,
-      selectedAddress: undefined,
-      displayedAddress: undefined,
+      currentUser: undefined,
+      displayedUser: undefined,
       searchQuery: ""
     };
 
@@ -66,19 +66,7 @@ export class Dapp extends React.Component {
       return <NoWalletDetected />;
     }
 
-    // Note that we pass it a callback that is going to be called when the user
-    // clicks a button. This callback just calls the _connectWallet method.
-    // if (!this.state.selectedAddress) {
-    //   return (
-    //     <ConnectWallet 
-    //       connectWallet={() => this._connectWallet()} 
-    //       networkError={this.state.networkError}
-    //       dismiss={() => this._dismissNetworkError()}
-    //     />
-    //   );
-    // }
-
-    if (!this.state.efs) {
+    if (!this.state.efd) {
       return <Loading />;
     }
 
@@ -87,7 +75,7 @@ export class Dapp extends React.Component {
         <Nav connectWallet={() => this._connectWallet()} 
           networkError={this.state.networkError}
           dismiss={() => this._dismissNetworkError()}
-          selectedAddress={this.state.selectedAddress}
+          currentUser={this.state.currentUser}
           searchQuery={this.state.searchQuery}
           onSearchChange={this._onSearchChange}
           onSearchSubmit={this._onSearch}
@@ -97,7 +85,7 @@ export class Dapp extends React.Component {
             <div style={{display: "flex", justifyContent: "center"}}>
               <div style={{marginLeft: "-40px"}}>
                 {
-                  this.state.displayedUser ? <HeaderUser user={this.state.displayedUser} displayedAddress={this.state.displayedAddress} selectedAddress={this.state.selectedAddress}/> : <></>
+                  this.state.displayedUser ? <HeaderUser user={this.state.displayedUser} currentUser={this.state.currentUser}/> : <></>
                 }
                 
               </div>
@@ -116,70 +104,72 @@ export class Dapp extends React.Component {
     this._initialize()
   }
 
+  async _hasAccountConnected() {
+    const request = await window.ethereum.send("eth_accounts")
+    return request.result.length > 0
+  }
+
   async _connectWallet() {
-    const request = await window.ethereum.send('eth_requestAccounts')
-    
-    const [selectedAddress] = request.result
+    try {
+      const [address] = await window.ethereum.request({ method: 'eth_requestAccounts' })
+      const currentUser = await this._userFromAddress(address)
+      this.setState({currentUser})
+    } catch (error) {
+      
+    }
 
     if (!this._checkNetwork()) {
       return;
     }
+  }
 
-    this._initialize(selectedAddress);
+  async _initialize(currentUser) {
+    this._provider = new ethers.providers.Web3Provider(window.ethereum);
+    await this._loadContracts(this._provider)
+
+    const isConnected = await this._hasAccountConnected()
+    if (currentUser === undefined) {
+      if (isConnected) {
+        await this._connectWallet()
+      }
+    }
 
     // We reinitialize it whenever the user changes their account.
     window.ethereum.on("accountsChanged", ([newAddress]) => {
-      
       if (newAddress === undefined) {
         return this._resetState();
       }
-      
-      this._initialize(newAddress);
+      this._connectWallet()
     });
-  }
-
-  async _initialize(userAddress) {
-    if (userAddress === undefined) {
-      if (window.ethereum.isConnected()) {
-        this._connectWallet()
-        return
-      }
-    }
     
     window.ethereum.on("chainChanged", ([networkId]) => {
       this._resetState();
     });
 
-    this.setState({
-      selectedAddress: userAddress,
-    });
-
-    this._intializeEthers();
+    if (isConnected) {
+      await this._loadContracts(this._provider.getSigner(0))
+    }
   }
 
-  async _intializeEthers() {
-    this._provider = new ethers.providers.Web3Provider(window.ethereum);
-    this._loadContracts()
-  }
+  async _loadContracts(providerOrSigner) {
 
-  async _loadContracts() {
     let chainId = await window.ethereum.request({ method: 'eth_chainId' });
     chainId = parseInt(chainId)
 
-    const efs = new ethers.Contract(
+    const efd = new ethers.Contract(
       deploymentMap.contracts[chainId].EthereumFriendDirectory[0],
       EFDArtifact.abi,
-      this._provider.getSigner(0)
+      providerOrSigner
     )
 
     const reverseRecords = new ethers.Contract(
       deploymentMap.contracts[chainId].ReverseRecords[0],
       ReverseRecordsArtifact.abi,
-      this._provider.getSigner(0)
+      providerOrSigner
     )
 
     this.setState({
-      efs,
+      efd,
       reverseRecords
     })
   }
@@ -210,7 +200,7 @@ export class Dapp extends React.Component {
      * 2. Resolve user + adj addresses
      */
 
-    const [adj, _] = await this.state.efs.getAdj(address)
+    const [adj, _] = await this.state.efd.getAdj(address)
     const allAddresses = [address, ...adj]
     const allNames = await this.state.reverseRecords.getNames(allAddresses)
     const validNames = allNames.filter((n) => namehash.normalize(n) === n)
@@ -226,10 +216,7 @@ export class Dapp extends React.Component {
       friends: adj.map(a => {return {ens: ensMapping[a], address: a}}),
       address
     }
-
-    
   }
-
 
   _dismissNetworkError() {
     this.setState({ networkError: undefined });
