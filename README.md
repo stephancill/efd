@@ -30,7 +30,7 @@ Requests are created and accepted off-chain. This is the most cost-effective way
         - [ ] Create signature that you can send to someone 
         - [ ] Route to sign request to accept
         - [ ] Route to publish friend confirmation
-    - [ ] View other accounts
+    - [x] View other accounts
 - [ ] Testing
     - [x] Create ENS task
     - [ ] Set profile image

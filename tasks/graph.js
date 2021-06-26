@@ -8,7 +8,7 @@ async function randomGraph() {
   const accounts = await ethers.getSigners()
 
   // 1. Register ENS for all accounts
-  let ensPromises = accounts.map(async a => {
+  let ensPromises = accounts.slice(0, Math.round(accounts.length/2)).map(async a => {
     const name = `${casual.first_name}${casual.last_name}`.toLowerCase()
     console.log(name, a.address)
     await registerENS(name, a.address, network)

@@ -97,13 +97,15 @@ export class Dapp extends React.Component {
             <div style={{display: "flex", justifyContent: "center"}}>
               <div style={{marginLeft: "-40px"}}>
                 {
-                  this.state.displayedAddress ? <HeaderUser displayedAddress={this.state.displayedAddress} selectedAddress={this.state.selectedAddress}/> : <></>
+                  this.state.displayedUser ? <HeaderUser user={this.state.displayedUser} displayedAddress={this.state.displayedAddress} selectedAddress={this.state.selectedAddress}/> : <></>
                 }
                 
               </div>
             </div>
+            {
+              this.state.displayedUser ? <UserList title="Friends" users={this.state.displayedUser.friends}></UserList> : <></>
+            }
             
-            <UserList title="Friends" users={testUsers}></UserList>
           </div>
         </div>
       </div>
@@ -127,7 +129,6 @@ export class Dapp extends React.Component {
 
     // We reinitialize it whenever the user changes their account.
     window.ethereum.on("accountsChanged", ([newAddress]) => {
-      console.log("changed")
       
       if (newAddress === undefined) {
         return this._resetState();
@@ -151,8 +152,6 @@ export class Dapp extends React.Component {
 
     this.setState({
       selectedAddress: userAddress,
-    }, () => {
-      console.log(userAddress, this.selectedAddress)
     });
 
     this._intializeEthers();
@@ -192,10 +191,13 @@ export class Dapp extends React.Component {
       return
     }
 
+    // TODO: Validate displayed address
+    const user = await this._userFromAddress(this.state.searchQuery)
+
     this.setState({
       searchQuery: "",
-      displayedAddress: this.state.searchQuery
-    }, async () => this._userFromAddress(this.state.displayedAddress));
+      displayedUser: user, 
+    });
   }
 
   async _onSearchChange(e) {
@@ -203,18 +205,29 @@ export class Dapp extends React.Component {
   }
 
   async _userFromAddress(address) {
-    // TODO
     /** 
      * 1. Get adj
      * 2. Resolve user + adj addresses
      */
 
-    console.log(this.state.efs)
-
     const [adj, _] = await this.state.efs.getAdj(address)
-    const allNames = await this.state.reverseRecords.getNames([address, ...adj])
+    const allAddresses = [address, ...adj]
+    const allNames = await this.state.reverseRecords.getNames(allAddresses)
     const validNames = allNames.filter((n) => namehash.normalize(n) === n)
-    console.log(validNames)
+    // TODO: Reverse lookup all names
+     
+    const ensMapping = {}
+    allAddresses.forEach((a, i) => {
+      ensMapping[a] = allNames[i] || null
+    })
+
+    return {
+      ens: ensMapping[address],
+      friends: adj.map(a => {return {ens: ensMapping[a], address: a}}),
+      address
+    }
+
+    
   }
 
 
