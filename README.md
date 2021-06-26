@@ -1,6 +1,6 @@
 # 🌈 Ethereum Friend Directory
 
-Ethereum Friend Directory (EFD for short) is a blockchain-based graph which allows users to maintain a list of friend accounts. This allows you to take your contact list with you wherever you go on the decentralized web and also serves as a layer of proof of humanity. 
+Ethereum Friend Directory is a blockchain-based social graph which allows users to maintain a list of mutual connections. This list of connections can be accessed by any app on the decentralized web to allow for social use cases e.g. a portable following/follower list.
 
 ## How it works
 
@@ -14,7 +14,7 @@ Requests are created and accepted off-chain. This is the most cost-effective way
 - The adjacency matrix `adj` is read by the client to display who is friends with who.
 - ENS is used to resolve ENS domains and profile images 
 
-### Progress:
+### Progress
 - [ ] Design - [Figma](https://www.figma.com/file/T8AoUKQ0UNE5qTtftqg7nL/Ethereum-Friend-Directory?node-id=0%3A1)
     - [x] Concept mapped out
 - [ ] Contract
