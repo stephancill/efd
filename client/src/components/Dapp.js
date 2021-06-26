@@ -6,6 +6,8 @@ import namehash from "eth-ens-namehash"
 import deploymentMap from "../deployments/map.json"
 import EFDArtifact from "../artifacts/contracts/EthereumFriendDirectory.sol/EthereumFriendDirectory.json"
 import ReverseRecordsArtifact from "../artifacts/@ensdomains/reverse-records/contracts/ReverseRecords.sol/ReverseRecords.json"
+import ENSRegistryArtifact from "../artifacts/@ensdomains/ens/contracts/ENSRegistry.sol/ENSRegistry.json"
+import ResolverArtifact from "../artifacts/@ensdomains/resolver/contracts/Resolver.sol/Resolver.json"
 
 import { NoWalletDetected } from "./NoWalletDetected"
 import { ConnectWallet } from "./ConnectWallet"
@@ -20,6 +22,7 @@ import {User} from "./User"
 import UserList from "./UserList"
 
 import "./App.css"
+import { use } from "chai"
 
 var testUser = {ens: "hello.eth", address: "0xbF6aE81C7f53A19246174bB18464Ca26f0b2A2BE", friends: [
   "0xbF6aE81C7f53A19246174bB18464Ca26f0b2A2B6",
@@ -48,6 +51,8 @@ export class Dapp extends React.Component {
     this.initialState = {
       efd: undefined,
       reverseRecords: undefined,
+      ensRegistry: undefined,
+      resolverInterface: undefined,
       currentUser: undefined,
       displayedUser: undefined,
       searchQuery: ""
@@ -168,9 +173,24 @@ export class Dapp extends React.Component {
       providerOrSigner
     )
 
+    
+    const ensRegistry = new ethers.Contract(
+      deploymentMap.contracts[chainId].ENS[0],
+      ENSRegistryArtifact.abi,
+      providerOrSigner
+    )
+
+    const resolverInterface = new ethers.Contract(
+      deploymentMap.contracts[chainId].PublicResolver[0],
+      ResolverArtifact.abi, 
+      providerOrSigner
+    )
+
     this.setState({
       efd,
-      reverseRecords
+      reverseRecords,
+      ensRegistry,
+      resolverInterface
     })
   }
 
@@ -181,8 +201,14 @@ export class Dapp extends React.Component {
       return
     }
 
-    // TODO: Validate displayed address
-    const user = await this._userFromAddress(this.state.searchQuery)
+    let user
+    if (this.state.searchQuery.slice(0,2) == "0x") {
+      // TODO: Validate displayed address
+      user = await this._userFromAddress(this.state.searchQuery)
+    } else {
+      user = await this._userFromENS(this.state.searchQuery)
+    }
+    
 
     this.setState({
       searchQuery: "",
@@ -192,6 +218,14 @@ export class Dapp extends React.Component {
 
   async _onSearchChange(e) {
     this.setState({searchQuery: e.target.value})
+  }
+
+  async _userFromENS(name) {
+    const hash = namehash.hash(name)
+    const resolverAddress = await this.state.ensRegistry.resolver(hash)
+    const userAddress = await this.state.resolverInterface.attach(resolverAddress)["addr(bytes32)"](hash)
+    const user = await this._userFromAddress(userAddress)
+    return user
   }
 
   async _userFromAddress(address) {

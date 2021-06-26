@@ -6,11 +6,10 @@ function UserList(props) {
     return <div className="userListContainer">
         <h2>{props.title}</h2>
         <div className="userList">
-            {users.map(user => <div style={{paddingBottom: "11px"}}>
-                <User key={user.address} user={user}></User>
+            {users.map(user => <div key={user.address} style={{paddingBottom: "11px"}}>
+                <User user={user}></User>
             </div> )}
         </div>
-        
     </div>
 }
 
