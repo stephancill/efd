@@ -1,23 +1,23 @@
-import React from "react";
+import React from "react"
 
-import { ethers } from "ethers";
-import namehash from "eth-ens-namehash";
+import { ethers } from "ethers"
+import namehash from "eth-ens-namehash"
 
 import deploymentMap from "../deployments/map.json"
 import EFDArtifact from "../artifacts/contracts/EthereumFriendDirectory.sol/EthereumFriendDirectory.json"
 import ReverseRecordsArtifact from "../artifacts/@ensdomains/reverse-records/contracts/ReverseRecords.sol/ReverseRecords.json"
 
-import { NoWalletDetected } from "./NoWalletDetected";
-import { ConnectWallet } from "./ConnectWallet";
-import { Loading } from "./Loading";
-import { Transfer } from "./Transfer";
-import { TransactionErrorMessage } from "./TransactionErrorMessage";
-import { WaitingForTransactionMessage } from "./WaitingForTransactionMessage";
-import { NoTokensMessage } from "./NoTokensMessage";
+import { NoWalletDetected } from "./NoWalletDetected"
+import { ConnectWallet } from "./ConnectWallet"
+import { Loading } from "./Loading"
+import { Transfer } from "./Transfer"
+import { TransactionErrorMessage } from "./TransactionErrorMessage"
+import { WaitingForTransactionMessage } from "./WaitingForTransactionMessage"
+import { NoTokensMessage } from "./NoTokensMessage"
 import { Nav } from "./Nav"
-import HeaderUser from "./HeaderUser";
-import User from "./User";
-import UserList from "./UserList";
+import HeaderUser from "./HeaderUser"
+import User from "./User"
+import UserList from "./UserList"
 
 import "./App.css"
 
@@ -36,14 +36,14 @@ var testUsers = [
 // This is the Hardhat Network id, you might change it in the hardhat.config.js
 // Here's a list of network ids https://docs.metamask.io/guide/ethereum-provider.html#properties
 // to use when deploying to other networks.
-const HARDHAT_NETWORK_ID = '31337';
+const HARDHAT_NETWORK_ID = '31337'
 
 // This is an error code that indicates that the user canceled a transaction
-const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
+const ERROR_CODE_TX_REJECTED_BY_USER = 4001
 
 export class Dapp extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.initialState = {
       efd: undefined,
@@ -51,23 +51,23 @@ export class Dapp extends React.Component {
       currentUser: undefined,
       displayedUser: undefined,
       searchQuery: ""
-    };
+    }
 
-    this.state = this.initialState;
+    this.state = this.initialState
 
-    this._onSearch = this._onSearch.bind(this);
-    this._onSearchChange = this._onSearchChange.bind(this);
+    this._onSearch = this._onSearch.bind(this)
+    this._onSearchChange = this._onSearchChange.bind(this)
   }
 
   render() {
     // Ethereum wallets inject the window.ethereum object. If it hasn't been
     // injected, we instruct the user to install MetaMask.
     if (window.ethereum === undefined) {
-      return <NoWalletDetected />;
+      return <NoWalletDetected />
     }
 
     if (!this.state.efd) {
-      return <Loading />;
+      return <Loading />
     }
 
     return (
@@ -97,7 +97,7 @@ export class Dapp extends React.Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   async componentDidMount() {
@@ -119,12 +119,12 @@ export class Dapp extends React.Component {
     }
 
     if (!this._checkNetwork()) {
-      return;
+      return
     }
   }
 
   async _initialize(currentUser) {
-    this._provider = new ethers.providers.Web3Provider(window.ethereum);
+    this._provider = new ethers.providers.Web3Provider(window.ethereum)
     await this._loadContracts(this._provider)
 
     const isConnected = await this._hasAccountConnected()
@@ -137,14 +137,14 @@ export class Dapp extends React.Component {
     // We reinitialize it whenever the user changes their account.
     window.ethereum.on("accountsChanged", ([newAddress]) => {
       if (newAddress === undefined) {
-        return this._resetState();
+        return this._resetState()
       }
       this._connectWallet()
-    });
+    })
     
     window.ethereum.on("chainChanged", ([networkId]) => {
-      this._resetState();
-    });
+      this._resetState()
+    })
 
     if (isConnected) {
       await this._loadContracts(this._provider.getSigner(0))
@@ -153,7 +153,7 @@ export class Dapp extends React.Component {
 
   async _loadContracts(providerOrSigner) {
 
-    let chainId = await window.ethereum.request({ method: 'eth_chainId' });
+    let chainId = await window.ethereum.request({ method: 'eth_chainId' })
     chainId = parseInt(chainId)
 
     const efd = new ethers.Contract(
@@ -175,7 +175,7 @@ export class Dapp extends React.Component {
   }
 
   async _onSearch(e) {
-    e.preventDefault();
+    e.preventDefault()
 
     if (this.state.searchQuery.length == 0) {
       return
@@ -187,11 +187,11 @@ export class Dapp extends React.Component {
     this.setState({
       searchQuery: "",
       displayedUser: user, 
-    });
+    })
   }
 
   async _onSearchChange(e) {
-    this.setState({searchQuery: e.target.value});
+    this.setState({searchQuery: e.target.value})
   }
 
   async _userFromAddress(address) {
@@ -219,31 +219,31 @@ export class Dapp extends React.Component {
   }
 
   _dismissNetworkError() {
-    this.setState({ networkError: undefined });
+    this.setState({ networkError: undefined })
   }
 
   _getRpcErrorMessage(error) {
     if (error.data) {
-      return error.data.message;
+      return error.data.message
     }
 
-    return error.message;
+    return error.message
   }
 
   _resetState() {
-    this.setState(this.initialState);
+    this.setState(this.initialState)
     this._initialize()
   }
 
   _checkNetwork() {
     if (window.ethereum.networkVersion === HARDHAT_NETWORK_ID) {
-      return true;
+      return true
     }
 
     this.setState({ 
       networkError: 'Please connect Metamask to Localhost:8545'
-    });
+    })
 
-    return false;
+    return false
   }
 }
