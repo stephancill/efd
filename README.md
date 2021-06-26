@@ -1,7 +1,5 @@
 # 🌈 Ethereum Friend Directory
 
-![Logo](./client/src/logo.svg)
-
 Ethereum Friend Directory (EFD for short) is a blockchain-based graph which allows users to maintain a list of friend accounts. This allows you to take your contact list with you wherever you go on the decentralized web and also serves as a layer of proof of humanity. 
 
 ## How it works
@@ -24,8 +22,9 @@ Requests are created and accepted off-chain. This is the most cost-effective way
     - [ ] Remove friends
 - [ ] Frontend
     - [x] Basic components
-    - [ ] Connect/switch account and view profile
-    - [ ] ENS reverse resolution - [ENS Docs](https://docs.ens.domains/dapp-developer-guide/resolving-names#reverse-resolution)
+    - [x] Connect/switch account and view profile
+    - [ ] Profile url
+    - [x] ENS reverse resolution - [ENS Docs](https://docs.ens.domains/dapp-developer-guide/resolving-names#reverse-resolution)
     - [ ] Requests
         - [ ] Create signature that you can send to someone 
         - [ ] Route to sign request to accept
@@ -42,22 +41,33 @@ Reach out on Twitter [@stephancill](https://twitter.com/stephancill) if you'd li
 
 ## Installation
 
-`yarn`
+```
+yarn
+```
 
 ## Development
 
 ### Contract
-`yarn run node`
+```
+yarn run node
+```
 
 In a separate terminal:
+```
+yarn deploy
+```
 
-`yarn deploy`
+To generate random data for the built in accounts:
+```
+npx hardhat graph
+```
 
 ### Client
-`cd client`
-
-`yarn start`
-
+```
+cd client
+yarn start
+```
 ## Tests
-
-`yarn test`
+```
+yarn test
+```
