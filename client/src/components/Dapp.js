@@ -10,39 +10,17 @@ import ENSRegistryArtifact from "../artifacts/@ensdomains/ens/contracts/ENSRegis
 import ResolverArtifact from "../artifacts/@ensdomains/resolver/contracts/Resolver.sol/Resolver.json"
 
 import { NoWalletDetected } from "./NoWalletDetected"
-import { ConnectWallet } from "./ConnectWallet"
 import { Loading } from "./Loading"
-import { Transfer } from "./Transfer"
-import { TransactionErrorMessage } from "./TransactionErrorMessage"
-import { WaitingForTransactionMessage } from "./WaitingForTransactionMessage"
-import { NoTokensMessage } from "./NoTokensMessage"
 import { Nav } from "./Nav"
 import HeaderUser from "./HeaderUser"
-import {User} from "./User"
 import UserList from "./UserList"
 
 import "./App.css"
-import { use } from "chai"
-
-var testUser = {ens: "hello.eth", address: "0xbF6aE81C7f53A19246174bB18464Ca26f0b2A2BE", friends: [
-  "0xbF6aE81C7f53A19246174bB18464Ca26f0b2A2B6",
-  "0x12F904C8721f2E93825cbE91c1aB08f5656Ab5DF",
-  "0x12F904C8721f2E93825cbE91c1aB08f5656Ab5DD"
-]} 
-
-var testUsers = [
-  {ens: "hello.eth", address: "0xbF6aE81C7f53A19246174bB18464Ca26f0b2A2B6", friends: []}, 
-  {ens: "hehehe.eth", address: "0x12F904C8721f2E93825cbE91c1aB08f5656Ab5DF", friends: []},
-  {ens: "stephan.eth", address: "0x12F904C8721f2E93825cbE91c1aB08f5656Ab5DD", profileImage: "https://avatars.githubusercontent.com/u/5469870?v=4", friends: []}
-]
 
 // This is the Hardhat Network id, you might change it in the hardhat.config.js
 // Here's a list of network ids https://docs.metamask.io/guide/ethereum-provider.html#properties
 // to use when deploying to other networks.
 const HARDHAT_NETWORK_ID = '31337'
-
-// This is an error code that indicates that the user canceled a transaction
-const ERROR_CODE_TX_REJECTED_BY_USER = 4001
 
 export class Dapp extends React.Component {
   constructor(props) {
@@ -110,8 +88,8 @@ export class Dapp extends React.Component {
   }
 
   async _hasAccountConnected() {
-    const request = await window.ethereum.send("eth_accounts")
-    return request.result.length > 0
+    const accounts = await window.ethereum.request({method: "eth_accounts"})
+    return accounts.length > 0
   }
 
   async _connectWallet() {
@@ -197,12 +175,12 @@ export class Dapp extends React.Component {
   async _onSearch(e) {
     e.preventDefault()
 
-    if (this.state.searchQuery.length == 0) {
+    if (this.state.searchQuery.length === 0) {
       return
     }
 
     let user
-    if (this.state.searchQuery.slice(0,2) == "0x") {
+    if (this.state.searchQuery.slice(0,2) === "0x") {
       // TODO: Validate displayed address
       user = await this._userFromAddress(this.state.searchQuery)
     } else {
@@ -234,10 +212,10 @@ export class Dapp extends React.Component {
      * 2. Resolve user + adj addresses
      */
 
-    const [adj, _] = await this.state.efd.getAdj(address)
+    const [adj] = await this.state.efd.getAdj(address)
     const allAddresses = [address, ...adj]
     const allNames = await this.state.reverseRecords.getNames(allAddresses)
-    const validNames = allNames.filter((n) => namehash.normalize(n) === n)
+    // const validNames = allNames.filter((n) => namehash.normalize(n) === n)
     // TODO: Reverse lookup all names
      
     const ensMapping = {}
