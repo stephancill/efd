@@ -3,7 +3,7 @@ import User from "./User"
 import "./HeaderUser.css"
 
 function HeaderUser({user, currentUser}) {
-    const mutuals = []
+    const mutuals = user.friends.filter(u => currentUser.friends.map(f=>f.address).includes(u.address))
     return <div>
         <User user={user}></User>
         <div className="headerDetailContainer">
