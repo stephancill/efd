@@ -7,7 +7,7 @@ function truncateAddress(address) {
     return `${address.slice(0,6)}...${address.slice(address.length-4,address.length)}`
 }
 
-function User({user}) {
+export function User({user}) {
 
     var iconURL = createIcon({
         seed: user.address,
@@ -23,7 +23,9 @@ function User({user}) {
         </div>
         <div className="detailContainer">
             <div className="username">{user.ens}</div>
-            <div className="address">{truncateAddress(user.address)}</div>
+            <div style={{cursor: "copy"}} className="address"
+            onClick={() => window.navigator.clipboard.writeText(user.address)}
+            >{truncateAddress(user.address)}</div>
         </div>
     </div>
 }

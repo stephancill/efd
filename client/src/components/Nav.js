@@ -1,5 +1,6 @@
 import React from "react"
 import logo from "./../logo.svg"
+import { User } from "./User"
 
 export function Nav({connectWallet, currentUser, onSearchSubmit, onSearchChange, searchQuery}) {
   return <nav>
@@ -16,7 +17,7 @@ export function Nav({connectWallet, currentUser, onSearchSubmit, onSearchChange,
     {
       currentUser ?
       <div style={{textAlign: "right"}} className="userItem">
-        <div>{currentUser.address}</div>
+          <User user={currentUser}></User>
       </div> :
       <div style={{textAlign: "right"}} className="connectButton">
         <button onClick={connectWallet}>Connect</button>

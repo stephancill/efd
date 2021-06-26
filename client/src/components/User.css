@@ -1,7 +1,6 @@
 .userItem {
     display: flex;
     align-items: center;
-    padding-bottom: 11px;
 }
 
 .userItem .profileImage img {

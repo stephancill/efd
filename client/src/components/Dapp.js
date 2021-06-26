@@ -16,7 +16,7 @@ import { WaitingForTransactionMessage } from "./WaitingForTransactionMessage"
 import { NoTokensMessage } from "./NoTokensMessage"
 import { Nav } from "./Nav"
 import HeaderUser from "./HeaderUser"
-import User from "./User"
+import {User} from "./User"
 import UserList from "./UserList"
 
 import "./App.css"
