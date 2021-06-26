@@ -1,5 +1,5 @@
 import React from "react"
-
+import { withRouter, Router, Switch, Route } from "react-router"
 import { ethers } from "ethers"
 import namehash from "eth-ens-namehash"
 
@@ -22,7 +22,7 @@ import "./App.css"
 // to use when deploying to other networks.
 const HARDHAT_NETWORK_ID = '31337'
 
-export class Dapp extends React.Component {
+class Dapp extends React.Component {
   constructor(props) {
     super(props)
 
@@ -62,23 +62,28 @@ export class Dapp extends React.Component {
           searchQuery={this.state.searchQuery}
           onSearchChange={this._onSearchChange}
           onSearchSubmit={this._onSearch}
-          />
-        <div style={{display: "flex", justifyContent: "center"}}>
-          <div style={{marginTop: "50px"}}>
+        />
+          <Switch>
+          <Route path="/aaa"><div>aaa</div></Route>
+            <Route path="/account/:addressOrENS">
             <div style={{display: "flex", justifyContent: "center"}}>
-              <div style={{marginLeft: "-40px"}}>
+              <div style={{marginTop: "50px"}}>
+                <div style={{display: "flex", justifyContent: "center"}}>
+                  <div style={{marginLeft: "-40px"}}>
+                    {
+                      this.state.displayedUser ? <HeaderUser user={this.state.displayedUser} currentUser={this.state.currentUser}/> : <></>
+                    }
+                    
+                  </div>
+                </div>
                 {
-                  this.state.displayedUser ? <HeaderUser user={this.state.displayedUser} currentUser={this.state.currentUser}/> : <></>
+                  this.state.displayedUser ? <UserList title="Friends" users={this.state.displayedUser.friends}></UserList> : <></>
                 }
                 
               </div>
             </div>
-            {
-              this.state.displayedUser ? <UserList title="Friends" users={this.state.displayedUser.friends}></UserList> : <></>
-            }
-            
-          </div>
-        </div>
+            </Route>
+          </Switch>
       </div>
     )
   }
@@ -175,6 +180,9 @@ export class Dapp extends React.Component {
   async _onSearch(e) {
     e.preventDefault()
 
+    console.log(this.props.history)
+    console.log(this.props) // TODO: Not matching properly
+
     if (this.state.searchQuery.length === 0) {
       return
     }
@@ -186,7 +194,10 @@ export class Dapp extends React.Component {
     } else {
       user = await this._userFromENS(this.state.searchQuery)
     }
-    
+
+    if (user) {
+      this.props.history.push(`/account/${this.state.searchQuery}`)
+    }
 
     this.setState({
       searchQuery: "",
@@ -258,4 +269,8 @@ export class Dapp extends React.Component {
 
     return false
   }
+}
+
+export default {
+  Dapp: withRouter(Dapp)
 }
