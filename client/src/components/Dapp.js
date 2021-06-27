@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react"
+import React from "react"
 
 import { ethers } from "ethers"
 import namehash from "eth-ens-namehash"
@@ -22,70 +22,119 @@ import "./App.css"
 // to use when deploying to other networks.
 const HARDHAT_NETWORK_ID = '31337'
 
-export function Dapp() {
-  const [efd, setefd] = useState(undefined)
-  const [reverseRecords, setreverseRecords] = useState(undefined)
-  const [ensRegistry, setensRegistry] = useState(undefined)
-  const [resolverInterface, setresolverInterface] = useState(undefined)
-  const [currentUser, setcurrentUser] = useState(undefined)
-  const [displayedUser, setdisplayedUser] = useState(undefined)
-  const [searchQuery, setsearchQuery] = useState("")
+export class Dapp extends React.Component {
+  constructor(props) {
+    super(props)
 
-  useEffect(() => {
-    _initialize()
-  }, [])
+    this.initialState = {
+      efd: undefined,
+      reverseRecords: undefined,
+      ensRegistry: undefined,
+      resolverInterface: undefined,
+      currentUser: undefined,
+      displayedUser: undefined,
+      searchQuery: ""
+    }
 
-  const _hasAccountConnected = async () => {
+    this.state = this.initialState
+
+    this._onSearch = this._onSearch.bind(this)
+    this._onSearchChange = this._onSearchChange.bind(this)
+  }
+
+  render() {
+    // Ethereum wallets inject the window.ethereum object. If it hasn't been
+    // injected, we instruct the user to install MetaMask.
+    if (window.ethereum === undefined) {
+      return <NoWalletDetected />
+    }
+
+    if (!this.state.efd) {
+      return <Loading />
+    }
+
+    return (
+      <div className="App">
+        <Nav connectWallet={() => this._connectWallet()} 
+          networkError={this.state.networkError}
+          dismiss={() => this._dismissNetworkError()}
+          currentUser={this.state.currentUser}
+          searchQuery={this.state.searchQuery}
+          onSearchChange={this._onSearchChange}
+          onSearchSubmit={this._onSearch}
+          />
+        <div style={{display: "flex", justifyContent: "center"}}>
+          <div style={{marginTop: "50px"}}>
+            <div style={{display: "flex", justifyContent: "center"}}>
+              <div style={{marginLeft: "-40px"}}>
+                {
+                  this.state.displayedUser ? <HeaderUser user={this.state.displayedUser} currentUser={this.state.currentUser}/> : <></>
+                }
+                
+              </div>
+            </div>
+            {
+              this.state.displayedUser ? <UserList title="Friends" users={this.state.displayedUser.friends}></UserList> : <></>
+            }
+            
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  async componentDidMount() {
+    this._initialize()
+  }
+
+  async _hasAccountConnected() {
     const accounts = await window.ethereum.request({method: "eth_accounts"})
     return accounts.length > 0
   }
 
-  const _connectWallet = async () => {
-    console.log("hello")
+  async _connectWallet() {
     try {
       const [address] = await window.ethereum.request({ method: 'eth_requestAccounts' })
-      const currentUser = await _userFromAddress(address)
-      setcurrentUser(currentUser)
+      const currentUser = await this._userFromAddress(address)
+      this.setState({currentUser})
     } catch (error) {
       
     }
 
-    if (!_checkNetwork()) {
+    if (!this._checkNetwork()) {
       return
     }
   }
 
-  const _initialize = async (currentUser) => {
-    const _provider = new ethers.providers.Web3Provider(window.ethereum)
-    await _loadContracts(_provider)
+  async _initialize(currentUser) {
+    this._provider = new ethers.providers.Web3Provider(window.ethereum)
+    await this._loadContracts(this._provider)
 
-    const isConnected = await _hasAccountConnected()
+    const isConnected = await this._hasAccountConnected()
     if (currentUser === undefined) {
       if (isConnected) {
-        await _connectWallet()
+        await this._connectWallet()
       }
     }
 
     // We reinitialize it whenever the user changes their account.
     window.ethereum.on("accountsChanged", ([newAddress]) => {
       if (newAddress === undefined) {
-        
-        _resetState()
-        return
+        return this._resetState()
       }
-      _connectWallet()
+      this._connectWallet()
     })
     
     window.ethereum.on("chainChanged", ([networkId]) => {
-      _resetState()
+      this._resetState()
     })
 
     if (isConnected) {
-      await _loadContracts(_provider.getSigner(0))
+      await this._loadContracts(this._provider.getSigner(0))
     }
   }
 
-  const _loadContracts = async (providerOrSigner) => {
+  async _loadContracts(providerOrSigner) {
 
     let chainId = await window.ethereum.request({ method: 'eth_chainId' })
     chainId = parseInt(chainId)
@@ -115,52 +164,57 @@ export function Dapp() {
       providerOrSigner
     )
 
-    setefd(efd)
-    setreverseRecords(reverseRecords)
-    setensRegistry(ensRegistry)
-    setresolverInterface(resolverInterface)
+    this.setState({
+      efd,
+      reverseRecords,
+      ensRegistry,
+      resolverInterface
+    })
   }
 
-  const _onSearch = async (e) => {
+  async _onSearch(e) {
     e.preventDefault()
 
-    if (searchQuery.length === 0) {
+    if (this.state.searchQuery.length === 0) {
       return
     }
 
     let user
-    if (searchQuery.slice(0,2) === "0x") {
+    if (this.state.searchQuery.slice(0,2) === "0x") {
       // TODO: Validate displayed address
-      user = await _userFromAddress(searchQuery)
+      user = await this._userFromAddress(this.state.searchQuery)
     } else {
-      user = await _userFromENS(searchQuery)
+      user = await this._userFromENS(this.state.searchQuery)
     }
     
-    setsearchQuery("")
-    setdisplayedUser(user)
+
+    this.setState({
+      searchQuery: "",
+      displayedUser: user, 
+    })
   }
 
-  const _onSearchChange = (e) => {
-    setsearchQuery(e.target.value)
+  async _onSearchChange(e) {
+    this.setState({searchQuery: e.target.value})
   }
 
-  const _userFromENS = async (name) => {
+  async _userFromENS(name) {
     const hash = namehash.hash(name)
-    const resolverAddress = await ensRegistry.resolver(hash)
-    const userAddress = await resolverInterface.attach(resolverAddress)["addr(bytes32)"](hash)
-    const user = await _userFromAddress(userAddress)
+    const resolverAddress = await this.state.ensRegistry.resolver(hash)
+    const userAddress = await this.state.resolverInterface.attach(resolverAddress)["addr(bytes32)"](hash)
+    const user = await this._userFromAddress(userAddress)
     return user
   }
 
-  const _userFromAddress = async (address) => {
+  async _userFromAddress(address) {
     /** 
      * 1. Get adj
      * 2. Resolve user + adj addresses
      */
 
-    const [adj] = await efd.getAdj(address)
+    const [adj] = await this.state.efd.getAdj(address)
     const allAddresses = [address, ...adj]
-    const allNames = await reverseRecords.getNames(allAddresses)
+    const allNames = await this.state.reverseRecords.getNames(allAddresses)
     // const validNames = allNames.filter((n) => namehash.normalize(n) === n)
     // TODO: Reverse lookup all names
      
@@ -176,57 +230,32 @@ export function Dapp() {
     }
   }
 
-  const _resetState = () => {
-    setefd(undefined)
-    setreverseRecords(undefined)
-    setensRegistry(undefined)
-    setresolverInterface(undefined)
-    setcurrentUser(undefined)
-    setdisplayedUser(undefined)
-    setsearchQuery("")
-    _initialize()
+  _dismissNetworkError() {
+    this.setState({ networkError: undefined })
   }
 
-  const _checkNetwork = () => {
+  _getRpcErrorMessage(error) {
+    if (error.data) {
+      return error.data.message
+    }
+
+    return error.message
+  }
+
+  _resetState() {
+    this.setState(this.initialState)
+    this._initialize()
+  }
+
+  _checkNetwork() {
     if (window.ethereum.networkVersion === HARDHAT_NETWORK_ID) {
       return true
     }
 
+    this.setState({ 
+      networkError: 'Please connect Metamask to Localhost:8545'
+    })
+
     return false
   }
-
-  if (window.ethereum === undefined) {
-    return <NoWalletDetected />
-  }
-
-  if (!efd) {
-    return <Loading />
-  }
-
-  return (
-    <div className="App">
-      <Nav connectWallet={_connectWallet} 
-        currentUser={currentUser}
-        searchQuery={searchQuery}
-        onSearchChange={_onSearchChange}
-        onSearchSubmit={_onSearch}
-        />
-      <div style={{display: "flex", justifyContent: "center"}}>
-        <div style={{marginTop: "50px"}}>
-          <div style={{display: "flex", justifyContent: "center"}}>
-            <div style={{marginLeft: "-40px"}}>
-              {
-                displayedUser ? <HeaderUser user={displayedUser} currentUser={currentUser}/> : <></>
-              }
-              
-            </div>
-          </div>
-          {
-            displayedUser ? <UserList title="Friends" users={displayedUser.friends}></UserList> : <></>
-          }
-          
-        </div>
-      </div>
-    </div>
-  )
 }
