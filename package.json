@@ -6,7 +6,8 @@
   "dependencies": {
     "@ensdomains/reverse-records": "https://github.com/ensdomains/reverse-records",
     "@openzeppelin/contracts": "^4.1.0",
-    "casual": "^1.6.2"
+    "casual": "^1.6.2",
+    "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",

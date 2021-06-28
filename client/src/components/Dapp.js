@@ -1,5 +1,5 @@
 import React from "react"
-
+import { withRouter, Switch, Route, matchPath } from "react-router"
 import { ethers } from "ethers"
 import namehash from "eth-ens-namehash"
 
@@ -22,7 +22,7 @@ import "./App.css"
 // to use when deploying to other networks.
 const HARDHAT_NETWORK_ID = '31337'
 
-export class Dapp extends React.Component {
+class Dapp extends React.Component {
   constructor(props) {
     super(props)
 
@@ -33,7 +33,9 @@ export class Dapp extends React.Component {
       resolverInterface: undefined,
       currentUser: undefined,
       displayedUser: undefined,
-      searchQuery: ""
+      searchQuery: "",
+      userNotFound: false,
+      ready: undefined,
     }
 
     this.state = this.initialState
@@ -56,35 +58,64 @@ export class Dapp extends React.Component {
     return (
       <div className="App">
         <Nav connectWallet={() => this._connectWallet()} 
-          networkError={this.state.networkError}
-          dismiss={() => this._dismissNetworkError()}
           currentUser={this.state.currentUser}
           searchQuery={this.state.searchQuery}
           onSearchChange={this._onSearchChange}
           onSearchSubmit={this._onSearch}
-          />
-        <div style={{display: "flex", justifyContent: "center"}}>
-          <div style={{marginTop: "50px"}}>
-            <div style={{display: "flex", justifyContent: "center"}}>
-              <div style={{marginLeft: "-40px"}}>
-                {
-                  this.state.displayedUser ? <HeaderUser user={this.state.displayedUser} currentUser={this.state.currentUser}/> : <></>
-                }
-                
+        />
+          <Switch>
+            <Route path="/account/:addressOrENS" render={ (route) => {
+              return <div style={{display: "flex", justifyContent: "center"}}>
+                <div style={{marginTop: "50px"}}>
+                  {
+                    this.state.displayedUser ? <>
+                      <div style={{display: "flex", justifyContent: "center"}}>
+                        <div style={{marginLeft: "-40px"}}>
+                          <HeaderUser user={this.state.displayedUser} currentUser={this.state.currentUser}/>
+                        </div>
+                      </div>
+                      <UserList title="Friends" users={this.state.displayedUser.friends}></UserList>
+                    </> : 
+                    this.state.userNotFound ? <>
+                      {route.match.params.addressOrENS} could not be found :/
+                    </> : <></>
+                  }
+                </div>
               </div>
-            </div>
-            {
-              this.state.displayedUser ? <UserList title="Friends" users={this.state.displayedUser.friends}></UserList> : <></>
-            }
-            
-          </div>
-        </div>
+            }}></Route>
+          </Switch>
       </div>
     )
   }
 
   async componentDidMount() {
     this._initialize()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+
+    const { pathname } = this.props.location;
+    const { pathname: prevPathname } = prevProps.location;
+    const params = this._getParams(pathname)
+    const prevParams = this._getParams(prevPathname)
+
+    if (params.addressOrENS) {
+      if (!prevState.ready && this.state.ready) {
+        this.updateUser(params.addressOrENS)
+        return
+      }
+      if (params.addressOrENS === prevParams.addressOrENS) {
+        return
+      }
+      this.updateUser(params.addressOrENS)
+    }
+  }
+
+  _getParams = (pathname) => {
+    const matchProfile = matchPath(pathname, {
+      path: `/account/:addressOrENS`,
+    })
+    return (matchProfile && matchProfile.params) || {}
   }
 
   async _hasAccountConnected() {
@@ -117,7 +148,6 @@ export class Dapp extends React.Component {
       }
     }
 
-    // We reinitialize it whenever the user changes their account.
     window.ethereum.on("accountsChanged", ([newAddress]) => {
       if (newAddress === undefined) {
         return this._resetState()
@@ -168,53 +198,70 @@ export class Dapp extends React.Component {
       efd,
       reverseRecords,
       ensRegistry,
-      resolverInterface
+      resolverInterface,
+      ready: true
     })
   }
 
   async _onSearch(e) {
     e.preventDefault()
-
-    if (this.state.searchQuery.length === 0) {
-      return
-    }
-
-    let user
-    if (this.state.searchQuery.slice(0,2) === "0x") {
-      // TODO: Validate displayed address
-      user = await this._userFromAddress(this.state.searchQuery)
-    } else {
-      user = await this._userFromENS(this.state.searchQuery)
-    }
-    
-
-    this.setState({
-      searchQuery: "",
-      displayedUser: user, 
-    })
+    this.props.history.push(`/account/${this.state.searchQuery}`)
   }
 
   async _onSearchChange(e) {
     this.setState({searchQuery: e.target.value})
   }
 
+  async updateUser(addressOrENS) {
+    
+    if (this.state.displayedUser && (this.state.displayedUser.address === addressOrENS || this.state.displayedUser.ens === addressOrENS)
+    ) {
+      return
+    }
+
+    let user
+    if (addressOrENS.slice(0,2) === "0x") {
+      // TODO: Validate displayed address
+      user = await this._userFromAddress(addressOrENS)
+    } else {
+      user = await this._userFromENS(addressOrENS)
+    }
+
+    if (!user) {
+      if (!this.state.userNotFound) {
+        this.setState({
+          userNotFound: true,
+          displayedUser: null
+        })
+      }
+      return
+    }
+
+    this.setState({
+      searchQuery: "",
+      displayedUser: user, 
+      userNotFound: false
+    })
+  }
+
   async _userFromENS(name) {
     const hash = namehash.hash(name)
     const resolverAddress = await this.state.ensRegistry.resolver(hash)
+
+    if (resolverAddress === ethers.constants.AddressZero) {
+      return null
+    }
+
     const userAddress = await this.state.resolverInterface.attach(resolverAddress)["addr(bytes32)"](hash)
     const user = await this._userFromAddress(userAddress)
+    
     return user
   }
 
   async _userFromAddress(address) {
-    /** 
-     * 1. Get adj
-     * 2. Resolve user + adj addresses
-     */
-
     const [adj] = await this.state.efd.getAdj(address)
     const allAddresses = [address, ...adj]
-    const allNames = await this.state.reverseRecords.getNames(allAddresses)
+    const allNames = await this.state.reverseRecords.getNames(allAddresses) // TODO: Some kind of caching
     // const validNames = allNames.filter((n) => namehash.normalize(n) === n)
     // TODO: Reverse lookup all names
      
@@ -258,4 +305,8 @@ export class Dapp extends React.Component {
 
     return false
   }
+}
+
+export default {
+  Dapp: withRouter(Dapp)
 }
