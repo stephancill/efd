@@ -20,7 +20,6 @@ async function randomGraph() {
     let subset = [...accounts.filter(_a => _a.address != a.address)]
     shuffle(subset)
     subset = subset.slice(0, 4)
-    console.log(subset.map(s=>s.address))
     let subPromises = subset.map(async s => {
       await addFriend(a, s)
     })

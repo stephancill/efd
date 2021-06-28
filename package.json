@@ -21,6 +21,7 @@
   },
   "scripts": {
     "node": "yarn hardhat node",
+    "dev": "yarn deploy && npx hardhat graph",
     "deploy": "yarn hardhat run scripts/deploy.js --network localhost",
     "test": "yarn hardhat test"
   }

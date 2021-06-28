@@ -23,7 +23,7 @@ Requests are created and accepted off-chain. This is the most cost-effective way
 - [ ] Frontend
     - [x] Basic components
     - [x] Connect/switch account and view profile
-    - [ ] Profile url
+    - [x] Profile url
     - [x] ENS reverse resolution - [ENS Docs](https://docs.ens.domains/dapp-developer-guide/resolving-names#reverse-resolution)
     - [ ] Requests
         - [ ] Create signature that you can send to someone 
@@ -52,12 +52,12 @@ yarn
 yarn run node
 ```
 
-In a separate terminal:
+In a separate terminal, to generate random data for the built in accounts:
 ```
-yarn deploy
+yarn dev
 ```
 
-To generate random data for the built in accounts:
+
 ```
 npx hardhat graph
 ```
