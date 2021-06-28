@@ -6,7 +6,7 @@ function HeaderUser({user, currentUser}) {
 
     const mutuals = currentUser ? user.friends.filter(u => currentUser.friends.map(f=>f.address).includes(u.address)) : []
     return <div>
-        <User user={user}></User>
+        <User user={user} addressCopyable={true}></User>
         <div className="headerDetailContainer">
             <span>{`${user.friends.length} friends`}</span>
             {

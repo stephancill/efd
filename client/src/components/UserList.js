@@ -1,13 +1,12 @@
 import React from "react"
 import {User} from "./User"
 
-function UserList(props) {
-    const users = props.users
+function UserList({title, users, onSelectUser}) {
     return <div className="userListContainer">
-        <h2>{props.title}</h2>
+        <h2>{title}</h2>
         <div className="userList">
             {users.map(user => <div key={user.address} style={{paddingBottom: "11px"}}>
-                <User user={user}></User>
+                <User user={user} onSelectUser={onSelectUser}></User>
             </div> )}
         </div>
     </div>

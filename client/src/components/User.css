@@ -3,6 +3,14 @@
     align-items: center;
 }
 
+.userItem:hover .profileImage {
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.userItem:hover {
+    cursor: pointer;
+}
+
 .userItem .profileImage img {
     border-radius: 50%;
     background-color: grey;

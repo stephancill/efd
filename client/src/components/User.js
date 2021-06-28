@@ -7,7 +7,7 @@ function truncateAddress(address) {
     return `${address.slice(0,6)}...${address.slice(address.length-4,address.length)}`
 }
 
-export function User({user}) {
+export function User({user, onSelectUser, addressCopyable=false}) {
 
     var iconURL = createIcon({
         seed: user.address,
@@ -15,16 +15,15 @@ export function User({user}) {
         scale: 2
     }).toDataURL()
 
-    return <div className="userItem">
-        
+    return <div className="userItem" onClick={onSelectUser ? () => onSelectUser(user) : () => {}}>
         <div className="profileImage">
         {/* https://stackoverflow.com/a/45212793 */}
         <img alt={user.address} src={user.profileImage ? user.profileImage : iconURL }></img>
         </div>
         <div className="detailContainer">
             <div className="username">{user.ens}</div>
-            <div style={{cursor: "copy"}} className="address"
-            onClick={() => window.navigator.clipboard.writeText(user.address)}
+            <div style={addressCopyable ? {cursor: "copy"} : {}} className="address"
+            onClick={addressCopyable ? () => window.navigator.clipboard.writeText(user.address) : () => {}}
             >{truncateAddress(user.address)}</div>
         </div>
     </div>

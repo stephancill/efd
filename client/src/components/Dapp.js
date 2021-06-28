@@ -42,6 +42,7 @@ class Dapp extends React.Component {
 
     this._onSearch = this._onSearch.bind(this)
     this._onSearchChange = this._onSearchChange.bind(this)
+    this._onSelectUser = this._onSelectUser.bind(this)
   }
 
   render() {
@@ -74,7 +75,7 @@ class Dapp extends React.Component {
                           <HeaderUser user={this.state.displayedUser} currentUser={this.state.currentUser}/>
                         </div>
                       </div>
-                      <UserList title="Friends" users={this.state.displayedUser.friends}></UserList>
+                      <UserList title="Friends" users={this.state.displayedUser.friends} onSelectUser={this._onSelectUser}></UserList>
                     </> : 
                     this.state.userNotFound ? <>
                       {route.match.params.addressOrENS} could not be found :/
@@ -201,6 +202,13 @@ class Dapp extends React.Component {
       resolverInterface,
       ready: true
     })
+  }
+
+  async _onSelectUser(user) {
+    const newDisplayUser = await this._userFromAddress(user.address)
+    if (user) {
+      this.setState({displayedUser: newDisplayUser})
+    }
   }
 
   async _onSearch(e) {
