@@ -14,6 +14,7 @@ import { Loading } from "./Loading"
 import { Nav } from "./Nav"
 import HeaderUser from "./HeaderUser"
 import UserList from "./UserList"
+import InvitePage from "./InvitePage"
 
 import "./App.css"
 
@@ -43,6 +44,8 @@ class Dapp extends React.Component {
     this._onSearch = this._onSearch.bind(this)
     this._onSearchChange = this._onSearchChange.bind(this)
     this._onSelectUser = this._onSelectUser.bind(this)
+    this._userFromAddress = this._userFromAddress.bind(this)
+    this._refreshCurrentUser = this._refreshCurrentUser.bind(this)
   }
 
   render() {
@@ -65,6 +68,23 @@ class Dapp extends React.Component {
           onSearchSubmit={this._onSearch}
         />
           <Switch>
+            <Route path="/invite/:encodedInvite" render={(route) => {
+              return <div style={{display: "flex", justifyContent: "center"}}>
+                <InvitePage 
+                  currentUser={this.state.currentUser} 
+                  route={route} 
+                  userFromAddress={this._userFromAddress} 
+                  onSelectUser={this._onSelectUser} 
+                  provider={this._provider}
+                  efd={this.state.efd}
+                  refreshCurrentUser={this._refreshCurrentUser}
+                  >
+                </InvitePage>
+              </div>
+              
+            }}>
+              
+            </Route>
             <Route path="/account/:addressOrENS" render={ (route) => {
               return <div style={{display: "flex", justifyContent: "center"}}>
                 <div style={{marginTop: "50px"}}>
@@ -72,7 +92,7 @@ class Dapp extends React.Component {
                     this.state.displayedUser ? <>
                       <div style={{display: "flex", justifyContent: "center"}}>
                         <div style={{marginLeft: "-40px"}}>
-                          <HeaderUser user={this.state.displayedUser} currentUser={this.state.currentUser}/>
+                          <HeaderUser user={this.state.displayedUser} currentUser={this.state.currentUser} provider={this._provider} efd={this.state.efd}/>
                         </div>
                       </div>
                       <UserList title="Friends" users={this.state.displayedUser.friends} onSelectUser={this._onSelectUser}></UserList>
@@ -205,10 +225,7 @@ class Dapp extends React.Component {
   }
 
   async _onSelectUser(user) {
-    const newDisplayUser = await this._userFromAddress(user.address)
-    if (user) {
-      this.setState({displayedUser: newDisplayUser})
-    }
+    this.props.history.push(`/account/${user.address}`)
   }
 
   async _onSearch(e) {
@@ -219,6 +236,11 @@ class Dapp extends React.Component {
   async _onSearchChange(e) {
     this.setState({searchQuery: e.target.value})
   }
+
+  async _refreshCurrentUser() {
+    const currentUser = await this._userFromAddress(this.state.currentUser.address)
+    this.setState({currentUser})
+  } 
 
   async updateUser(addressOrENS) {
     

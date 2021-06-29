@@ -23,8 +23,8 @@ async function getFriends(address) {
 async function addFriend(account1, account2) {
   const efd = await getEFD()
 
-  const senderSignature = await createRequest(account1, account2.address)
-  const acceptSignature = await acceptRequest(account1.address, account2, senderSignature)
+  const senderSignature = await createRequest(account1, account2.address, efd)
+  const acceptSignature = await acceptRequest(account1.address, account2, senderSignature, efd)
 
   await efd.connect(account1).confirmRequest(account1.address, account2.address, senderSignature, acceptSignature)
 }

@@ -14,17 +14,21 @@ contract EthereumFriendDirectory {
 
     event Confirmed(address fromAddress, address toAddress);   
 
-    constructor() {                  
-        // adj[msg.sender].add(address(0));      
-    }    
+    function hashRequest(address fromAddress, address toAddress) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(fromAddress, toAddress));
+    }
 
-    function confirmRequest(address fromAddress, address toAddress, bytes memory senderSig, bytes memory acceptorSig) public {
+    function hashAccept(address fromAddress, address toAddress, bytes calldata senderSig) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(fromAddress, toAddress, senderSig));
+    }
+
+    function confirmRequest(address fromAddress, address toAddress, bytes calldata senderSig, bytes calldata acceptorSig) public {
         require(fromAddress != toAddress, "Addresses cannot be the same");
 
-        bytes32 requestHash = keccak256(abi.encodePacked(fromAddress, toAddress)).toEthSignedMessageHash();       
+        bytes32 requestHash = hashRequest(fromAddress, toAddress).toEthSignedMessageHash();   
         require(SignatureChecker.isValidSignatureNow(fromAddress, requestHash, senderSig), "Invalid sender");
 
-        bytes32 acceptHash = keccak256(abi.encodePacked(fromAddress, toAddress, senderSig)).toEthSignedMessageHash();
+        bytes32 acceptHash = hashAccept(fromAddress, toAddress, senderSig).toEthSignedMessageHash();
         require(SignatureChecker.isValidSignatureNow(toAddress, acceptHash, acceptorSig), "Invalid acceptor");
 
         emit Confirmed(fromAddress, toAddress);

@@ -51,12 +51,17 @@ nav .search input:focus {
     color: black;
 }
 
+h2 {
+    color: var(--primary-grey);
+    font-weight: normal;
+}
+
 .friendsContainer {
     align-items: center;
     justify-content: center;
 }
 
-.userListContainer {
+.card {
     background-color: var(--secondary-grey);
     border-radius: 10px;
     width: 250px;

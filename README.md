@@ -26,8 +26,8 @@ Requests are created and accepted off-chain. This is the most cost-effective way
     - [x] Profile url
     - [x] ENS reverse resolution - [ENS Docs](https://docs.ens.domains/dapp-developer-guide/resolving-names#reverse-resolution)
     - [ ] Requests
-        - [ ] Create signature that you can send to someone 
-        - [ ] Route to sign request to accept
+        - [x] Create signature that you can send to someone 
+        - [x] Route to sign request to accept
         - [ ] Route to publish friend confirmation
     - [x] View other accounts
 - [ ] Testing
@@ -55,11 +55,6 @@ yarn run node
 In a separate terminal, to generate random data for the built in accounts:
 ```
 yarn dev
-```
-
-
-```
-npx hardhat graph
 ```
 
 ### Client
