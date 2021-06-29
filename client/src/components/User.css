@@ -30,5 +30,6 @@
 
 .userItem .address {
     font-size: 12px;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Roboto Mono', monospace;
+    color: var(--primary-grey);
 }

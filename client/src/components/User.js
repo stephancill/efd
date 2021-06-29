@@ -10,7 +10,7 @@ function truncateAddress(address) {
 export function User({user, onSelectUser, addressCopyable=false}) {
 
     var iconURL = createIcon({
-        seed: user.address,
+        seed: user.address.toLowerCase(),
         size: 15,
         scale: 2
     }).toDataURL()
