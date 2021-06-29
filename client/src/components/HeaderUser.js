@@ -2,11 +2,13 @@ import React, {useState, useEffect} from "react"
 import User from "./User"
 import "./HeaderUser.css"
 import { createRequest } from "../util"
-import { ethers } from "ethers"
 
 function HeaderUser({user, currentUser, provider, efd}) {
     let [inviteHash, setInviteHash] = useState(undefined)
     let [sendInvite, setSendInvite] = useState(false)
+    
+    let isOwnProfile = currentUser && user.address.toLowerCase() === currentUser.address.toLowerCase()
+    let areFriends = currentUser && currentUser.friends.map(u=>u.address.toLowerCase()).includes(user.address.toLowerCase())
 
     useEffect(() => {
         if (sendInvite) {
@@ -37,6 +39,7 @@ function HeaderUser({user, currentUser, provider, efd}) {
                 setSendInvite(false)
             })()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sendInvite])
 
     const mutuals = currentUser ? user.friends.filter(u => currentUser.friends.map(f=>f.address).includes(u.address)) : []
@@ -44,10 +47,8 @@ function HeaderUser({user, currentUser, provider, efd}) {
     return <div>
         <div style={{display: "flex"}}>
             <User user={user} addressCopyable={true}></User>
-            {provider ? 
-            <button onClick={() => setSendInvite(true)}>
-                Invite
-            </button> : <></>}
+            {provider && currentUser && !isOwnProfile && !areFriends ? 
+            <button onClick={() => setSendInvite(true)}>Invite</button> : <></>}
         </div>
         
         <div className="headerDetailContainer">
