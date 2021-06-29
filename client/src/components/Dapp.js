@@ -10,7 +10,6 @@ import ENSRegistryArtifact from "../artifacts/@ensdomains/ens/contracts/ENSRegis
 import ResolverArtifact from "../artifacts/@ensdomains/resolver/contracts/Resolver.sol/Resolver.json"
 
 import { NoWalletDetected } from "./NoWalletDetected"
-import { Loading } from "./Loading"
 import { Nav } from "./Nav"
 import HeaderUser from "./HeaderUser"
 import UserList from "./UserList"
@@ -56,7 +55,7 @@ class Dapp extends React.Component {
     }
 
     if (!this.state.efd) {
-      return <Loading />
+      return <div>Loading...</div>
     }
 
     return (
@@ -289,6 +288,7 @@ class Dapp extends React.Component {
   }
 
   async _userFromAddress(address) {
+    console.log("call")
     const [adj] = await this.state.efd.getAdj(address)
     const allAddresses = [address, ...adj]
     const allNames = await this.state.reverseRecords.getNames(allAddresses) // TODO: Some kind of caching
