@@ -89,12 +89,18 @@ class Dapp extends React.Component {
                 <div style={{marginTop: "50px"}}>
                   {
                     this.state.displayedUser ? <>
-                      <div style={{display: "flex", justifyContent: "center"}}>
-                        <div style={{marginLeft: "-40px"}}>
-                          <HeaderUser user={this.state.displayedUser} currentUser={this.state.currentUser} provider={this._provider} efd={this.state.efd}/>
-                        </div>
-                      </div>
-                      <UserList title="Friends" users={this.state.displayedUser.friends} onSelectUser={this._onSelectUser}></UserList>
+                      <HeaderUser 
+                      user={this.state.displayedUser} 
+                      currentUser={this.state.currentUser} 
+                      provider={this._provider} 
+                      efd={this.state.efd}/>
+                      <UserList 
+                      title="Friends" 
+                      users={this.state.displayedUser.friends} 
+                      onSelectUser={this._onSelectUser} 
+                      emptyMessage={"Nothing to see here (yet!)"}
+                      currentUser={this.state.currentUser}
+                      />
                     </> : 
                     this.state.userNotFound ? <>
                       {route.match.params.addressOrENS} could not be found :/

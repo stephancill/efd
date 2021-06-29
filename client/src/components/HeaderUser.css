@@ -3,4 +3,12 @@
     color: var(--primary-grey);
     margin-left: 40px;
     margin-bottom: 20px;
+    margin-top: 4px;
+}
+
+.inviteButton {
+    flex: 1;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    cursor: pointer;
 }

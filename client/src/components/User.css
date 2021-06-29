@@ -29,7 +29,22 @@
 }
 
 .userItem .address {
+    display: inline-block;
     font-size: 12px;
     font-family: 'Roboto Mono', monospace;
     color: var(--primary-grey);
+}
+
+.userItem .misc {
+    display: inline-block;
+    font-size: 10px;
+    font-family: 'Roboto';
+    background-color: var(--primary-grey);
+    color: white;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    border-radius: 5px;
+    margin-left: 5px;
 }

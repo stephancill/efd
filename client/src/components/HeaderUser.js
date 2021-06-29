@@ -2,10 +2,12 @@ import React, {useState, useEffect} from "react"
 import User from "./User"
 import "./HeaderUser.css"
 import { createRequest } from "../util"
+import {MailIcon, XIcon} from '@primer/octicons-react'
 
 function HeaderUser({user, currentUser, provider, efd}) {
     let [inviteHash, setInviteHash] = useState(undefined)
     let [sendInvite, setSendInvite] = useState(false)
+    let [removeFriend, setRemoveFriend] = useState(false) // TODO: Implement remove friend
     
     let isOwnProfile = currentUser && user.address.toLowerCase() === currentUser.address.toLowerCase()
     let areFriends = currentUser && currentUser.friends.map(u=>u.address.toLowerCase()).includes(user.address.toLowerCase())
@@ -44,11 +46,16 @@ function HeaderUser({user, currentUser, provider, efd}) {
 
     const mutuals = currentUser ? user.friends.filter(u => currentUser.friends.map(f=>f.address).includes(u.address)) : []
 
-    return <div>
-        <div style={{display: "flex"}}>
-            <User user={user} addressCopyable={true}></User>
+    return <div style={{marginLeft: "20px"}}>
+        <div style={{display: "flex", flexGrow: "1",}}>
+            <div>
+                <User user={user} addressCopyable={true} miscText={isOwnProfile ? "You" : areFriends ? "Friend" : undefined}></User>
+            </div>
+            
             {provider && currentUser && !isOwnProfile && !areFriends ? 
-            <button onClick={() => setSendInvite(true)}>Invite</button> : <></>}
+            <button className="inviteButton" onClick={() => setSendInvite(true)}><MailIcon/></button> : 
+            areFriends ? 
+            <button className="inviteButton" onClick={() => setRemoveFriend(true)}><XIcon/></button> : <></>}
         </div>
         
         <div className="headerDetailContainer">

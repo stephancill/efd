@@ -29,6 +29,7 @@ export function InvitePage({currentUser, route, userFromAddress, onSelectUser, p
         (async function init() {
             if (!fromUser && currentUser) {
                 try {
+                    // TODO: Extract encode/decode invite code into utils and write tests
                     const inviteJSONString = atob(route.match.params.encodedInvite)
                     const inviteJSON = JSON.parse(inviteJSONString)
                     const user = await userFromAddress(inviteJSON.fromAddress)
