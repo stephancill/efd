@@ -13,6 +13,7 @@ contract EthereumFriendDirectory {
     mapping (address=>EnumerableSet.AddressSet) adj;
 
     event Confirmed(address fromAddress, address toAddress);   
+    event Removed(address userAddress, address removedAddress, bool wasPresent);   
 
     function hashRequest(address fromAddress, address toAddress) public pure returns (bytes32) {
         return keccak256(abi.encodePacked(fromAddress, toAddress));
@@ -35,6 +36,12 @@ contract EthereumFriendDirectory {
 
         adj[fromAddress].add(toAddress);
         adj[toAddress].add(fromAddress);
+    }
+
+    function removeAdj(address addressToRemove) public {
+        bool removed1 = adj[msg.sender].remove(addressToRemove);
+        bool removed2 = adj[addressToRemove].remove(msg.sender);
+        emit Removed(msg.sender, addressToRemove, removed1 || removed2);
     }
 
     function getAdj(address user) view public returns (address[] memory, uint256) {

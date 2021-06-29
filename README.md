@@ -19,7 +19,7 @@ Requests are created and accepted off-chain. This is the most cost-effective way
     - [x] Concept mapped out
 - [ ] Contract
     - [x] Confirm request accept
-    - [ ] Remove friends
+    - [x] Remove friends
 - [ ] Frontend
     - [x] Basic components
     - [x] Connect/switch account and view profile
