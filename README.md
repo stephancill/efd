@@ -29,7 +29,7 @@ Requests are created and accepted off-chain. This is the most cost-effective way
         - [x] Create signature that you can send to someone 
         - [x] Route to sign request to accept
         - [ ] Route to publish friend confirmation
-    - [ ] Remove friends
+    - [x] Remove friends
     - [x] View other accounts
     - [ ] UX improvements
         - [ ] Button hover states

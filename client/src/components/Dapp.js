@@ -45,6 +45,7 @@ class Dapp extends React.Component {
     this._onSelectUser = this._onSelectUser.bind(this)
     this._userFromAddress = this._userFromAddress.bind(this)
     this._refreshCurrentUser = this._refreshCurrentUser.bind(this)
+    this._refreshDisplayedUser = this._refreshDisplayedUser.bind(this)
   }
 
   render() {
@@ -94,7 +95,11 @@ class Dapp extends React.Component {
                       user={this.state.displayedUser} 
                       currentUser={this.state.currentUser} 
                       provider={this._provider} 
-                      efd={this.state.efd}/>
+                      efd={this.state.efd}
+                      refreshUser={this._refreshDisplayedUser}
+                      refreshCurrentUser={this._refreshCurrentUser}
+                      />
+
                       <UserList 
                       title="Friends" 
                       users={this.state.displayedUser.friends} 
@@ -248,6 +253,11 @@ class Dapp extends React.Component {
     this.setState({currentUser})
   } 
 
+  async _refreshDisplayedUser() {
+    const displayedUser = await this._userFromAddress(this.state.displayedUser.address)
+    this.setState({displayedUser})
+  }
+
   async updateUser(addressOrENS) {
     
     if (this.state.displayedUser && (this.state.displayedUser.address === addressOrENS || this.state.displayedUser.ens === addressOrENS)
@@ -309,7 +319,7 @@ class Dapp extends React.Component {
 
     return {
       ens: ensMapping[address],
-      friends: adj.map(a => {return {ens: ensMapping[a], address: a}}),
+      friends: adj.map(a => {return {ens: ensMapping[a], address: a.toLowerCase()}}),
       address
     }
   }

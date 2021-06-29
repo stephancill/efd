@@ -4,7 +4,7 @@ import "./HeaderUser.css"
 import { createRequest } from "../util"
 import {MailIcon, XIcon} from '@primer/octicons-react'
 
-function HeaderUser({user, currentUser, provider, efd}) {
+function HeaderUser({user, currentUser, provider, efd, refreshUser, refreshCurrentUser}) {
     let [inviteHash, setInviteHash] = useState(undefined)
     let [sendInvite, setSendInvite] = useState(false)
     let [removeFriend, setRemoveFriend] = useState(false) // TODO: Implement remove friend
@@ -43,6 +43,18 @@ function HeaderUser({user, currentUser, provider, efd}) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sendInvite])
+
+    useEffect(() => {
+        if (removeFriend) {
+            (async () => {
+                const tx = await efd.removeAdj(user.address)
+                await tx.wait()
+                await Promise.all([refreshCurrentUser(), refreshUser()])
+                setRemoveFriend(false)
+            })()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [removeFriend])
 
     const mutuals = currentUser ? user.friends.filter(u => currentUser.friends.map(f=>f.address).includes(u.address)) : []
 

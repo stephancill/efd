@@ -62,20 +62,19 @@ export function InvitePage({currentUser, route, userFromAddress, onSelectUser, p
 
     const confirmInvite = async () => {
         try {
-            await efd.confirmRequest(invite.fromAddress, invite.toAddress, invite.fromSignature, invite.toSignature)
+            const tx = await efd.confirmRequest(invite.fromAddress, invite.toAddress, invite.fromSignature, invite.toSignature)
+            await tx.wait()
+            refreshCurrentUser()
         } catch(error) {
             console.error(error)
         }
-
-        efd.once("Confirmed", (fromAddress, toAddress) => {
-            refreshCurrentUser()
-        })
     }
 
     return <div className="card invite">
         <h2>Invite</h2>
         {currentUser == null ? <div>Not connected</div> : 
         isLoading ? <div>Loading...</div> : 
+        // eslint-disable-next-line eqeqeq
         fromUser == null || fromUser == undefined ? <div>Invalid invite</div> : <>
             <User user={fromUser} onSelectUser={onSelectUser} addressCopyable={true}></User>
             <div style={{display: "flex", flexGrow: "1"}} >
