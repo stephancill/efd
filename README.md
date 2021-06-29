@@ -20,6 +20,8 @@ Requests are created and accepted off-chain. This is the most cost-effective way
 - [ ] Contract
     - [x] Confirm request accept
     - [x] Remove friends
+    - [ ] Batch confirm
+    - [ ] Batch remove
 - [ ] Frontend
     - [x] Basic components
     - [x] Connect/switch account and view profile
@@ -34,6 +36,7 @@ Requests are created and accepted off-chain. This is the most cost-effective way
     - [ ] UX improvements
         - [ ] Button hover states
         - [ ] Button loading states
+        - [ ] Page loading states
 - [ ] Testing
     - [x] Create ENS task
     - [ ] Set profile image
