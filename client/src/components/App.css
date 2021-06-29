@@ -24,12 +24,19 @@ nav {
     padding-bottom: 28px;
 }
 
-nav div {
-    flex: 1;
-}
 
 nav .navLogo {
     padding-top: 5px;
+    flex: 1;
+}
+
+nav .search {
+    flex: 1;
+}
+
+nav .userItemContainer {
+    flex: 1;
+    display: flex;
 }
 
 nav .search input {

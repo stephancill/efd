@@ -2,7 +2,7 @@ import React from "react"
 import logo from "./../logo.svg"
 import { User } from "./User"
 
-export function Nav({connectWallet, currentUser, onSearchSubmit, onSearchChange, searchQuery}) {
+export function Nav({connectWallet, currentUser, onSearchSubmit, onSearchChange, searchQuery, onSelectUser}) {
   return <nav>
     <div style={{textAlign: "left"}} className="navLogo">
       <a href="/"><img src={logo} alt="EFD" /></a>
@@ -14,14 +14,17 @@ export function Nav({connectWallet, currentUser, onSearchSubmit, onSearchChange,
       </form>
     </div>
 
+    <div className="userItemContainer">
     {
       currentUser ?
-      <div style={{textAlign: "right"}} className="userItem">
-          <User user={currentUser}></User>
+      <div style={{marginLeft: "auto"}} className="userItem">
+          <User user={currentUser} onSelectUser={onSelectUser}></User>
       </div> :
       <div style={{textAlign: "right"}} className="connectButton">
         <button onClick={connectWallet}>Connect</button>
       </div>
     }
+    </div>
+    
   </nav>;
 }

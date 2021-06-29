@@ -65,6 +65,7 @@ class Dapp extends React.Component {
           searchQuery={this.state.searchQuery}
           onSearchChange={this._onSearchChange}
           onSearchSubmit={this._onSearch}
+          onSelectUser={this._onSelectUser} 
         />
           <Switch>
             <Route path="/invite/:encodedInvite" render={(route) => {
