@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react"
 import { ethers } from "ethers"
 import User from "./User"
 import { acceptRequest } from "../util"
+import "./InvitePage.css"
 
 export function InvitePage({currentUser, route, userFromAddress, onSelectUser, provider, efd, refreshCurrentUser}) {
     
@@ -27,6 +28,9 @@ export function InvitePage({currentUser, route, userFromAddress, onSelectUser, p
                 }    
             }
         })()
+
+        if (invite && invite.fromAddress !== currentUser.address) {
+        }
     }, [currentUser])
 
     const acceptInvite = async () => {
@@ -50,20 +54,20 @@ export function InvitePage({currentUser, route, userFromAddress, onSelectUser, p
         })
     }
 
-    return <div className="card">
+    return <div className="card invite">
         <h2>Invite</h2>
         {currentUser == null ? <div>Not connected</div> : 
         fromUser === undefined ? <div>Loading...</div> : 
         fromUser === null ? <div>Invalid invite</div> : <>
             <User user={fromUser} onSelectUser={onSelectUser} addressCopyable={true}></User>
-            <div style={{display: "flex"}} >
+            <div style={{display: "flex", flexGrow: "1"}} >
                 {
                     currentUser.friends.map(u=>u.address.toLowerCase()).includes(fromUser.address.toLowerCase()) ? <>You are already friends</> :
                     invite && invite.toSignature ? 
-                    <button onClick={async () => await confirmInvite()}>Confirm</button> : 
+                    <span><button onClick={async () => await confirmInvite()}>Confirm</button></span> : 
                     <>
                     <button onClick={async () => await acceptInvite()}>Accept</button>
-                    <button>Ignore</button>
+                    <button className="btnSecondary">Ignore</button>
                     </>
                 }
             </div>

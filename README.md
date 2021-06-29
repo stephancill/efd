@@ -30,6 +30,9 @@ Requests are created and accepted off-chain. This is the most cost-effective way
         - [x] Route to sign request to accept
         - [ ] Route to publish friend confirmation
     - [x] View other accounts
+    - [ ] UX improvements
+        - [ ] Button hover states
+        - [ ] Button loading states
 - [ ] Testing
     - [x] Create ENS task
     - [ ] Set profile image
