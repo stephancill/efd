@@ -79,3 +79,32 @@ yarn start
 ```
 yarn test
 ```
+
+## Deployment
+
+### Contracts
+
+1. Update network in `hardhat.config.js`
+2. `npx hardhat run deploy --network [network name]`
+
+### Client
+
+1. `cd client`
+2. Add addresses for `PublicResolver`, `ReverseRegistrar`, `ReverseRecords`, `ENS` in `client/deployments/map.json` (and `EFD` if using an existing contract)
+3. Build using `yarn build`
+
+### Deploy client to IPFS using [ipfs-deploy](https://github.com/ipfs-shipyard/ipfs-deploy)
+
+1. Install ipfs-deploy
+```
+npm install -g ipfs-deploy
+```
+
+2. Deploy app
+```
+npx ipfs-deploy build
+```
+
+3. Visit the HTTP gateway URL to check if it worked.
+    
+
