@@ -58,9 +58,9 @@ function HeaderUser({user, currentUser, provider, efd, refreshUser, refreshCurre
 
     const mutuals = currentUser ? user.friends.filter(u => currentUser.friends.map(f=>f.address).includes(u.address)) : []
 
-    return <div style={{marginLeft: "20px"}}>
-        <div style={{display: "flex", flexGrow: "1",}}>
-            <div>
+    return <div className="headerUser">
+        <div style={{display: "flex"}}>
+            <div style={{width: "80%", display: "inline-block"}}>
                 <User user={user} addressCopyable={true} miscText={isOwnProfile ? "You" : areFriends ? "Friend" : undefined}></User>
             </div>
             

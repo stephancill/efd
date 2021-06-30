@@ -1,3 +1,8 @@
+.headerUser {
+    margin-left: 20px;
+    max-width: var(--col-width);
+}
+
 .headerDetailContainer {
     font-size: 12px;
     color: var(--primary-grey);
@@ -7,7 +12,7 @@
 }
 
 .inviteButton {
-    flex: 1;
+    display: inline-block;
     background-color: rgba(0, 0, 0, 0);
     border: none;
     cursor: pointer;

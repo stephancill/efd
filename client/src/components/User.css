@@ -21,11 +21,14 @@
 }
 
 .userItem .detailContainer {
+    max-width: 80%;
     padding-left: 11px;
 }
 
 .userItem .username {
     font-size: 18px;
+    overflow-x: hidden;
+    text-overflow: '...'
 }
 
 .userItem .address {
@@ -33,6 +36,7 @@
     font-size: 12px;
     font-family: 'Roboto Mono', monospace;
     color: var(--primary-grey);
+    
 }
 
 .userItem .misc {

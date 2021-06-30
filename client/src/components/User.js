@@ -21,8 +21,8 @@ export function User({user, onSelectUser, addressCopyable=false, miscText}) {
         <img alt={user.address} src={user.profileImage ? user.profileImage : iconURL }></img>
         </div>
         <div className="detailContainer">
-            <div className="username">{user.ens}</div>
-            <div style={addressCopyable ? {cursor: "copy"} : {}} className="address"
+            <div className="username" title={user.ens}>{user.ens}</div>
+            <div style={addressCopyable ? {cursor: "copy"} : {}} className="address" title={user.address}
             onClick={addressCopyable ? () => window.navigator.clipboard.writeText(user.address) : () => {}}
             >{truncateAddress(user.address)}</div>
             {miscText ? <div className="misc">{miscText}</div> : <></>}

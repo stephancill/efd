@@ -17,7 +17,7 @@ export function Nav({connectWallet, currentUser, onSearchSubmit, onSearchChange,
     <div className="userItemContainer">
     {
       currentUser ?
-      <div style={{marginLeft: "auto"}} className="userItem">
+      <div style={{marginLeft: "auto", maxWidth: "var(--col-width)"}}>
           <User user={currentUser} onSelectUser={onSelectUser}></User>
       </div> :
       <div style={{textAlign: "right"}} className="connectButton">

@@ -88,7 +88,7 @@ class Dapp extends React.Component {
             </Route>
             <Route path="/account/:addressOrENS" render={ (route) => {
               return <div style={{display: "flex", justifyContent: "center"}}>
-                <div style={{marginTop: "50px"}}>
+                <div style={{marginTop: "50px", marginBottom: "50px"}}>
                   {
                     this.state.displayedUser ? <>
                       <HeaderUser 
