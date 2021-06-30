@@ -25,6 +25,7 @@ async function main() {
 }
 
 // https://medium.com/the-ethereum-name-service/adding-ens-into-your-dapp-72eb6deac26b
+// TODO: Refactor this for deployment on live network
 async function deployENS() {
   const [deployer] = await ethers.getSigners()
 
