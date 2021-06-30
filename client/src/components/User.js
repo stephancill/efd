@@ -7,13 +7,20 @@ function truncateAddress(address) {
     return `${address.slice(0,6)}...${address.slice(address.length-4,address.length)}`
 }
 
-export function User({user, onSelectUser, addressCopyable=false, miscText}) {
+export function User({user, onSelectUser, addressCopyable=false, miscText, inline=false}) {
 
     var iconURL = createIcon({
         seed: user.address.toLowerCase(),
         size: 15,
         scale: 2
     }).toDataURL()
+
+    if (inline) {
+        return <span className="inlineUser">
+            <img alt={user.address} src={user.profileImage ? user.profileImage : iconURL }></img>
+            <span title={user.ens || user.address}>{user.ens ? user.ens : truncateAddress(user.address)}</span>
+        </span>
+    }
 
     return <div className="userItem" onClick={onSelectUser ? () => onSelectUser(user) : () => {}}>
         <div className="profileImage">

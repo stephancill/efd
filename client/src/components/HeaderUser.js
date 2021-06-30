@@ -2,10 +2,20 @@ import React, {useState, useEffect} from "react"
 import User from "./User"
 import "./HeaderUser.css"
 import { createRequest } from "../util"
-import {MailIcon, XIcon} from '@primer/octicons-react'
+import { MailIcon, XIcon, LinkIcon } from '@primer/octicons-react'
+import ReactModal from "react-modal"
+import qr from "qr-image"
+
+ReactModal.setAppElement("#root")
+
+function svgStringToBlob(string) {
+    const blob = new Blob([string], {type: 'image/svg+xml'})
+    return URL.createObjectURL(blob)
+}
 
 function HeaderUser({user, currentUser, provider, efd, refreshUser, refreshCurrentUser}) {
-    let [inviteHash, setInviteHash] = useState(undefined)
+    let [inviteURL, setInviteURL] = useState(undefined)
+    let [shouldShowModal, setShouldShowModal] = useState(false)
     let [sendInvite, setSendInvite] = useState(false)
     let [removeFriend, setRemoveFriend] = useState(false) // TODO: Implement remove friend
     
@@ -33,11 +43,12 @@ function HeaderUser({user, currentUser, provider, efd, refreshUser, refreshCurre
                 const inviteJSONString = JSON.stringify(inviteJSON)
                 const encodedInvite = btoa(inviteJSONString)
                 
-                const url = `${window.location.host}/invite/${encodedInvite}`
+                const url = `${window.location.protocol}//${window.location.host}/invite/${encodedInvite}`
 
-                console.log(url) // TODO: Copy this to the clipboard and display somewhere 
+                console.log(url)
 
-                setInviteHash(hash)
+                setInviteURL(url)
+                setShouldShowModal(true)
                 setSendInvite(false)
             })()
         }
@@ -76,7 +87,30 @@ function HeaderUser({user, currentUser, provider, efd, refreshUser, refreshCurre
                 currentUser ? <span style={{marginLeft: "10px"}}>{currentUser ? `${mutuals.length} mutual` : ""}</span> : <></>
             }
         </div>
-        
+
+        {
+            
+            inviteURL ? 
+            <ReactModal
+                isOpen={inviteURL && shouldShowModal}
+                onRequestClose={() => setShouldShowModal(false)}
+                className={"sendInviteModal"}
+                overlayClassName={"sendInviteModalOverlay"}
+            >
+                <h2>Send Invite</h2>
+                <div style={{display: "flex", alignItems: "center"}}>
+                    <span>Ask</span>
+                    <User user={user} inline={true}></User>
+                    <span>to scan:</span> 
+                </div>
+                <img className="qrImage" src={svgStringToBlob(qr.imageSync(inviteURL, { type: 'svg' })) }></img>
+                <div className="linkContainer">
+                    <span>Or send them this link:</span>
+                    <input readOnly={true} value={inviteURL} onClick={(event) => event.target.setSelectionRange(0, event.target.value.length)}/>
+                    <button onClick={() => window.navigator.clipboard.writeText(inviteURL)}><LinkIcon/></button> {/* TODO: A nice "Copied" tooltip */}
+                </div>
+            </ReactModal> : <></>
+        }
     </div>
 }
 

@@ -52,3 +52,17 @@
     border-radius: 5px;
     margin-left: 5px;
 }
+
+.inlineUser {
+    display: inline-flex;
+    align-items: center;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.inlineUser img {
+    border-radius: 50%;
+    padding-right: 2px;
+    height: 17px;
+    width: 17px;
+}

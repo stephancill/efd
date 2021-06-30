@@ -48,6 +48,7 @@ class Dapp extends React.Component {
     // Ethereum wallets inject the window.ethereum object. If it hasn't been
     // injected, we instruct the user to install MetaMask.
     if (window.ethereum === undefined) {
+      // TODO: Test this
       return <NoWalletDetected />
     }
 

@@ -7,6 +7,8 @@
     "@ensdomains/reverse-records": "https://github.com/ensdomains/reverse-records",
     "@openzeppelin/contracts": "^4.1.0",
     "casual": "^1.6.2",
+    "qr-image": "^3.2.0",
+    "react-modal": "^3.14.3",
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {

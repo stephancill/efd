@@ -11,7 +11,7 @@ Requests are created and accepted off-chain. This is the most cost-effective way
 3. Bob or Alice can confirm the request at any time by submitting it to the contract's `confirmRequest` method
 4. Bob's address is added to Alice's set in the `adj` mapping and Alice to Bob's
 
-- The adjacency matrix `adj` is read by the client to display who is friends with who.
+- The adjacency list for each user in `adj` is read by the client to display who is friends with who.
 - ENS is used to resolve ENS domains and profile images 
 
 ### Progress
@@ -31,6 +31,8 @@ Requests are created and accepted off-chain. This is the most cost-effective way
         - [x] Create signature that you can send to someone 
         - [x] Route to sign request to accept
         - [ ] Route to publish friend confirmation
+        - [ ] Share request via URL
+        - [ ] Share request via QR code
     - [x] Remove friends
     - [x] View other accounts
     - [ ] UX improvements
@@ -41,6 +43,8 @@ Requests are created and accepted off-chain. This is the most cost-effective way
     - [x] Create ENS task
     - [ ] Set profile image
 - [ ] Deploy
+    - [ ] Testnet
+    - [ ] Mainnet or L2
 
 Reach out on Twitter [@stephancill](https://twitter.com/stephancill) if you'd like to help out or make a PR.
 
@@ -69,6 +73,7 @@ yarn dev
 cd client
 yarn start
 ```
+
 ## Tests
 ```
 yarn test
