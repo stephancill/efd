@@ -17,11 +17,6 @@ import InvitePage from "./InvitePage"
 
 import "./App.css"
 
-// This is the Hardhat Network id, you might change it in the hardhat.config.js
-// Here's a list of network ids https://docs.metamask.io/guide/ethereum-provider.html#properties
-// to use when deploying to other networks.
-const HARDHAT_NETWORK_ID = '31337'
-
 class Dapp extends React.Component {
   constructor(props) {
     super(props)
@@ -36,6 +31,7 @@ class Dapp extends React.Component {
       searchQuery: "",
       userNotFound: false,
       ready: undefined,
+      networkError: undefined
     }
 
     this.state = this.initialState
@@ -55,6 +51,10 @@ class Dapp extends React.Component {
       return <NoWalletDetected />
     }
 
+    if (this.state.networkError) {
+      return <div>{this.state.networkError}</div>
+    }
+
     if (!this.state.efd) {
       return <div>Loading...</div>
     }
@@ -70,7 +70,7 @@ class Dapp extends React.Component {
         />
           <Switch>
             <Route path="/invite/:encodedInvite" render={(route) => {
-              return <div style={{display: "flex", justifyContent: "center"}}>
+              return <div style={{display: "flex", justifyContent: "center", marginTop: "50px"}}>
                 <InvitePage 
                   currentUser={this.state.currentUser} 
                   route={route} 
@@ -163,10 +163,6 @@ class Dapp extends React.Component {
     } catch (error) {
       
     }
-
-    if (!this._checkNetwork()) {
-      return
-    }
   }
 
   async _initialize(currentUser) {
@@ -197,9 +193,15 @@ class Dapp extends React.Component {
   }
 
   async _loadContracts(providerOrSigner) {
-
     let chainId = await window.ethereum.request({ method: 'eth_chainId' })
     chainId = parseInt(chainId)
+
+    if(!(chainId in deploymentMap.contracts)) {
+      this.setState({ 
+        networkError: "Contracts not deployed on this network."
+      })
+      return
+    }
 
     const efd = new ethers.Contract(
       deploymentMap.contracts[chainId].EthereumFriendDirectory[0],
@@ -339,18 +341,6 @@ class Dapp extends React.Component {
   _resetState() {
     this.setState(this.initialState)
     this._initialize()
-  }
-
-  _checkNetwork() {
-    if (window.ethereum.networkVersion === HARDHAT_NETWORK_ID) {
-      return true
-    }
-
-    this.setState({ 
-      networkError: 'Please connect Metamask to Localhost:8545'
-    })
-
-    return false
   }
 }
 
