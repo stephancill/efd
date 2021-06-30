@@ -22,6 +22,7 @@ Requests are created and accepted off-chain. This is the most cost-effective way
     - [x] Remove friends
     - [ ] Batch confirm
     - [ ] Batch remove
+    - [ ] Add salt to hash arguments 
 - [ ] Frontend
     - [x] Basic components
     - [x] Connect/switch account and view profile
@@ -31,8 +32,8 @@ Requests are created and accepted off-chain. This is the most cost-effective way
         - [x] Create signature that you can send to someone 
         - [x] Route to sign request to accept
         - [ ] Route to publish friend confirmation
-        - [ ] Share request via URL
-        - [ ] Share request via QR code
+        - [x] Share request via URL
+        - [x] Share request via QR code
     - [x] Remove friends
     - [x] View other accounts
     - [ ] UX improvements
