@@ -10,3 +10,4 @@ node_modules
 *.dbg.json
 artifacts/
 *cache.*
+credentials.json

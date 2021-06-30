@@ -1,6 +1,6 @@
 require("@nomiclabs/hardhat-waffle");
 require("hardhat-dependency-compiler");
-
+const credentials = require("./credentials.json")
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -49,6 +49,12 @@ task("graph", "Reserves ENS names and creates a random EFS graph")
  */
 module.exports = {
   defaultNetwork: "localhost",
+  networks: {
+    goerli: {
+      url: `https://eth-goerli.alchemyapi.io/v2/${credentials.ALCHEMYAPI_SECRET}`,
+      accounts: [`${credentials.DEPLOYER_PRIVATE_KEY}`]
+    }
+  },
   solidity: {
     compilers: [
       {
