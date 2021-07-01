@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom"
+import { HashRouter } from "react-router-dom"
 import Dapp from "./components/Dapp";
 
 // This is the entry point of your application, but it just renders the Dapp
@@ -8,9 +8,9 @@ import Dapp from "./components/Dapp";
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <HashRouter>
       <Dapp.Dapp />
-    </BrowserRouter>
+    </HashRouter>
   </React.StrictMode>,
   document.getElementById("root")
 );

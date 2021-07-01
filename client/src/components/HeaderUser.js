@@ -43,7 +43,7 @@ function HeaderUser({user, currentUser, provider, efd, refreshUser, refreshCurre
                 const inviteJSONString = JSON.stringify(inviteJSON)
                 const encodedInvite = btoa(inviteJSONString)
                 
-                const url = `${window.location.protocol}//${window.location.host}/invite/${encodedInvite}`
+                const url = `${window.location.protocol}//${window.location.host}/#/invite/${encodedInvite}`
 
                 console.log(url)
 
