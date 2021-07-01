@@ -92,7 +92,7 @@ function HeaderUser({user, currentUser, provider, efd, refreshUser, refreshCurre
         </div>
         
         <div className="headerDetailContainer">
-            <span>{`${user.friends.length} friends`}</span>
+            <span>{`${user.friends.length} friend${user.friends.length > 1 ? "s" : ""}`}</span>
             {
                 currentUser && currentUser.address !== user.address ? <span style={{marginLeft: "10px"}}>{currentUser ? `${mutuals.length} mutual` : ""}</span> : <></>
             }
