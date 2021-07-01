@@ -40,12 +40,13 @@ Requests are created and accepted off-chain. This is the most cost-effective way
         - [ ] Button hover states
         - [ ] Button loading states
         - [ ] Page loading states
+        - [ ] Mobile layout
 - [ ] Testing
     - [x] Create ENS task
     - [ ] Set profile image
 - [ ] Deploy
     - [x] Testnet
-        * 1 July 2021 - [Goerli](https://goerli.etherscan.io/tx/0x181f95da7f19df535c98d2c11e6acf8547fbd53d2f9ec35c6a698b72f4f6aa09) - [IPFS](https://bafybeiegqr46dhho3vxwhu3gpfjugkjcyqyyeuqxn7xivwxznl6roiwzwe.ipfs.infura-ipfs.io)
+        * 1 July 2021 - [Goerli](https://goerli.etherscan.io/tx/0x181f95da7f19df535c98d2c11e6acf8547fbd53d2f9ec35c6a698b72f4f6aa09) - [IPFS](https://bafybeiegqr46dhho3vxwhu3gpfjugkjcyqyyeuqxn7xivwxznl6roiwzwe.ipfs.infura-ipfs.io) - [commit](https://github.com/stephancill/efd/commit/333229e64680e9807d2e7b300e948e3d4ae3679a)
     - [ ] Mainnet or L2
 
 Reach out on Twitter [@stephancill](https://twitter.com/stephancill) if you'd like to help out or make a PR.
