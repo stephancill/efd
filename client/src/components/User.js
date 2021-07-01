@@ -10,7 +10,7 @@ function truncateAddress(address) {
 
 export function User({user, onSelectUser, addressCopyable=false, miscText, inline=false, displayedUser}) {
 
-    let [isLoading, setIsLoading] = useState(false)
+    let [isLoading, setIsLoading] = useState(true)
 
     var iconURL = createIcon({
         seed: user.address.toLowerCase(),

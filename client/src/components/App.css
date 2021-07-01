@@ -84,3 +84,28 @@ h2 {
     max-height: 600px;
     overflow-y: scroll;
 }
+
+.actionButton {
+    flex: 1;
+    background-color: black;
+    height: 35px;
+    color: white;
+    border: none;
+    margin-right: 15px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 10px;
+    font-family: Roboto;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.2s;
+}
+
+.actionButton:hover, .actionButton:hover .spinner {
+    transition: 0.2s;
+    scale: 1.1;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}

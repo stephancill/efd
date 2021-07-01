@@ -89,10 +89,10 @@ export function InvitePage({currentUser, route, userFromAddress, onSelectUser, p
                 {
                     errorMessage ? errorMessage :
                     invite && invite.toSignature ? 
-                    <span><SpinnerButton isSpinning={isConfirming} onClick={async () => await confirmInvite()}>Confirm</SpinnerButton></span> : 
+                    <span><SpinnerButton style={{width: "100px"}} className="actionButton" isSpinning={isConfirming} onClick={async () => await confirmInvite()}>Confirm</SpinnerButton></span> : 
                     <>
-                    <SpinnerButton isSpinning={isAccepting} onClick={async () => await acceptInvite()}>Accept</SpinnerButton>
-                    <button onClick={() => history.push("/")} className="btnSecondary">Ignore</button>
+                    <SpinnerButton className="actionButton" isSpinning={isAccepting} onClick={async () => await acceptInvite()}>Accept</SpinnerButton>
+                    <button onClick={() => history.push("/")} className="actionButton btnSecondary">Ignore</button>
                     </>
                 }
             </div>

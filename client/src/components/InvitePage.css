@@ -1,24 +1,5 @@
 
 
-.invite button {
-  flex: 1;
-  background-color: black;
-  height: 35px;
-  color: white;
-  border: none;
-  margin-right: 15px;
-  margin-top: 15px;
-  margin-bottom: 10px;
-  padding-left: 15px;
-  padding-right: 15px;
-  border-radius: 10px;
-  font-family: Roboto;
-  font-size: 16px;
-  cursor: pointer;
-  width: 100%;
-  transition: 0.2s;
-}
-
 .invite button:hover, .invite button:hover .spinner {
   transition: 0.2s;
   scale: 1.1;

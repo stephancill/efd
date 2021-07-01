@@ -32,6 +32,7 @@ class Dapp extends React.Component {
       userNotFound: false,
       ready: undefined,
       networkError: undefined,
+      isConnectingWallet: false
     }
 
     this.state = this.initialState
@@ -63,6 +64,7 @@ class Dapp extends React.Component {
     return (
       <div className="App">
         <Nav connectWallet={() => this._connectWallet()} 
+          isConnectingWallet={this.state.isConnectingWallet}
           currentUser={this.state.currentUser}
           displayedUser={this.state.displayedUser}
           searchQuery={this.state.searchQuery}
@@ -159,13 +161,15 @@ class Dapp extends React.Component {
   }
 
   async _connectWallet() {
+    this.setState({isConnectingWallet: true})
     try {
       const [address] = await window.ethereum.request({ method: 'eth_requestAccounts' })
       const currentUser = await this._userFromAddress(address)
       this.setState({currentUser})
     } catch (error) {
-      
+      console.error(error)
     }
+    this.setState({isConnectingWallet: false})
   }
 
   async _initialize(currentUser) {
