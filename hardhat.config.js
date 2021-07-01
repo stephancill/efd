@@ -1,9 +1,9 @@
 require("@nomiclabs/hardhat-waffle");
 require("hardhat-dependency-compiler");
+require("@nomiclabs/hardhat-etherscan");
+
 const credentials = require("./credentials.json")
 
-// This is a sample Hardhat task. To learn how to create your own go to
-// https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async () => {
   const accounts = await ethers.getSigners();
 
@@ -49,6 +49,9 @@ task("graph", "Reserves ENS names and creates a random EFS graph")
  */
 module.exports = {
   defaultNetwork: "localhost",
+  etherscan: {
+    apiKey: credentials.ETHERSCAN_API_KEY
+  },
   networks: {
     goerli: {
       url: `https://eth-goerli.alchemyapi.io/v2/${credentials.ALCHEMYAPI_SECRET}`,
