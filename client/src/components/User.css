@@ -11,13 +11,18 @@
     cursor: pointer;
 }
 
-.userItem .profileImage img {
-    border-radius: 50%;
-    background-color: grey;
+.userItem .profileImage {
     width: 29px;
     height: 29px;
-    display:inline-block;
-    margin-top: 5px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.userItem .profileImage img {
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0);
+    width: 100%;
+    height: 100%;
 }
 
 .userItem .detailContainer {

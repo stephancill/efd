@@ -37,8 +37,8 @@ Requests are created and accepted off-chain. This is the most cost-effective way
     - [x] Remove friends
     - [x] View other accounts
     - [ ] UX improvements
-        - [ ] Button hover states
-        - [ ] Button loading states
+        - [x] Button hover states
+        - [x] Button loading states
         - [ ] Page loading states
         - [ ] Mobile layout
 - [ ] Testing

@@ -3,6 +3,10 @@
     max-width: var(--col-width);
 }
 
+.headerUser .userItem {
+    cursor: default;
+}
+
 .headerDetailContainer {
     font-size: 12px;
     color: var(--primary-grey);

@@ -2,9 +2,10 @@ import React, {useState, useEffect} from "react"
 import User from "./User"
 import "./HeaderUser.css"
 import { createRequest } from "../util"
-import { MailIcon, XIcon, LinkIcon } from '@primer/octicons-react'
+import { PaperAirplaneIcon , XIcon, LinkIcon } from '@primer/octicons-react'
 import ReactModal from "react-modal"
 import qr from "qr-image"
+import "./Spinner.css"
 
 ReactModal.setAppElement("#root")
 
@@ -17,7 +18,7 @@ function HeaderUser({user, currentUser, provider, efd, refreshUser, refreshCurre
     let [inviteURL, setInviteURL] = useState(undefined)
     let [shouldShowModal, setShouldShowModal] = useState(false)
     let [sendInvite, setSendInvite] = useState(false)
-    let [removeFriend, setRemoveFriend] = useState(false) // TODO: Implement remove friend
+    let [removeFriend, setRemoveFriend] = useState(false)
     
     let isOwnProfile = currentUser && user.address.toLowerCase() === currentUser.address.toLowerCase()
     let areFriends = currentUser && currentUser.friends.map(u=>u.address.toLowerCase()).includes(user.address.toLowerCase())
@@ -58,9 +59,14 @@ function HeaderUser({user, currentUser, provider, efd, refreshUser, refreshCurre
     useEffect(() => {
         if (removeFriend) {
             (async () => {
-                const tx = await efd.removeAdj(user.address)
-                await tx.wait()
-                await Promise.all([refreshCurrentUser(), refreshUser()])
+                try {
+                    const tx = await efd.removeAdj(user.address)
+                    await tx.wait()
+                    await Promise.all([refreshCurrentUser(), refreshUser()])
+                } catch (error) {
+                    console.error(error)
+                }
+                
                 setRemoveFriend(false)
             })()
         }
@@ -76,15 +82,19 @@ function HeaderUser({user, currentUser, provider, efd, refreshUser, refreshCurre
             </div>
             
             {provider && currentUser && !isOwnProfile && !areFriends ? 
-            <button className="inviteButton" onClick={() => setSendInvite(true)}><MailIcon/></button> : 
+            <button className="inviteButton" title="Send request" onClick={() => setSendInvite(true)}>
+                {sendInvite ? <div className="spinner"></div> : <PaperAirplaneIcon />}
+            </button> : 
             areFriends ? 
-            <button className="inviteButton" onClick={() => setRemoveFriend(true)}><XIcon/></button> : <></>}
+            <button className="inviteButton" onClick={() => setRemoveFriend(true)}>
+                {removeFriend ? <div className="spinner"></div> : <XIcon/>}
+            </button> : <></>}
         </div>
         
         <div className="headerDetailContainer">
             <span>{`${user.friends.length} friends`}</span>
             {
-                currentUser ? <span style={{marginLeft: "10px"}}>{currentUser ? `${mutuals.length} mutual` : ""}</span> : <></>
+                currentUser && currentUser.address !== user.address ? <span style={{marginLeft: "10px"}}>{currentUser ? `${mutuals.length} mutual` : ""}</span> : <></>
             }
         </div>
 

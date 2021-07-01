@@ -2,12 +2,16 @@ import React, {useEffect, useState} from "react"
 import User from "./User"
 import { acceptRequest } from "../util"
 import "./InvitePage.css"
+import { SpinnerButton } from "./Spinner"
 
-export function InvitePage({currentUser, route, userFromAddress, onSelectUser, provider, efd, refreshCurrentUser}) {
+export function InvitePage({currentUser, route, userFromAddress, onSelectUser, provider, efd, refreshCurrentUser, history}) {
     
-    const [fromUser, setFromUser] = useState(undefined)
-    const [invite, setInvite] = useState(undefined)
-    const [errorMessage, setErrorMessage] = useState(undefined)
+    let [fromUser, setFromUser] = useState(undefined)
+    let [invite, setInvite] = useState(undefined)
+    let [errorMessage, setErrorMessage] = useState(undefined)
+
+    let [isAccepting, setIsAccepting] = useState(false)
+    let [isConfirming, setIsConfirming] = useState(false)
 
     let isLoading = fromUser === undefined
     let alreadyFriends = currentUser && fromUser && currentUser.friends.map(u=>u.address.toLowerCase()).includes(fromUser.address.toLowerCase())
@@ -52,15 +56,18 @@ export function InvitePage({currentUser, route, userFromAddress, onSelectUser, p
     }, [currentUser])
 
     const acceptInvite = async () => {
+        setIsAccepting(true)
         try {
             const signature = await acceptRequest(invite.fromAddress, provider.getSigner(currentUser.address), invite.fromSignature, efd)
             setInvite({...invite, toSignature: signature})
         } catch(error) {
             console.error(error)
         }
+        setIsAccepting(false)
     }
 
     const confirmInvite = async () => {
+        setIsConfirming(true)
         try {
             const tx = await efd.confirmRequest(invite.fromAddress, invite.toAddress, invite.fromSignature, invite.toSignature)
             await tx.wait()
@@ -68,6 +75,7 @@ export function InvitePage({currentUser, route, userFromAddress, onSelectUser, p
         } catch(error) {
             console.error(error)
         }
+        setIsConfirming(false)
     }
 
     return <div className="card invite">
@@ -81,10 +89,10 @@ export function InvitePage({currentUser, route, userFromAddress, onSelectUser, p
                 {
                     errorMessage ? errorMessage :
                     invite && invite.toSignature ? 
-                    <span><button onClick={async () => await confirmInvite()}>Confirm</button></span> : 
+                    <span><SpinnerButton isSpinning={isConfirming} onClick={async () => await confirmInvite()}>Confirm</SpinnerButton></span> : 
                     <>
-                    <button onClick={async () => await acceptInvite()}>Accept</button>
-                    <button className="btnSecondary">Ignore</button>
+                    <SpinnerButton isSpinning={isAccepting} onClick={async () => await acceptInvite()}>Accept</SpinnerButton>
+                    <button onClick={() => history.push("/")} className="btnSecondary">Ignore</button>
                     </>
                 }
             </div>

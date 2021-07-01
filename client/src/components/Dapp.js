@@ -31,7 +31,7 @@ class Dapp extends React.Component {
       searchQuery: "",
       userNotFound: false,
       ready: undefined,
-      networkError: undefined
+      networkError: undefined,
     }
 
     this.state = this.initialState
@@ -64,6 +64,7 @@ class Dapp extends React.Component {
       <div className="App">
         <Nav connectWallet={() => this._connectWallet()} 
           currentUser={this.state.currentUser}
+          displayedUser={this.state.displayedUser}
           searchQuery={this.state.searchQuery}
           onSearchChange={this._onSearchChange}
           onSearchSubmit={this._onSearch}
@@ -80,13 +81,13 @@ class Dapp extends React.Component {
                   provider={this._provider}
                   efd={this.state.efd}
                   refreshCurrentUser={this._refreshCurrentUser}
+                  history={this.props.history}
                   >
                 </InvitePage>
               </div>
               
-            }}>
-              
-            </Route>
+            }}/>
+
             <Route path="/account/:addressOrENS" render={ (route) => {
               return <div style={{display: "flex", justifyContent: "center"}}>
                 <div style={{marginTop: "50px", marginBottom: "50px"}}>
@@ -107,6 +108,7 @@ class Dapp extends React.Component {
                       onSelectUser={this._onSelectUser} 
                       emptyMessage={"Nothing to see here (yet!)"}
                       currentUser={this.state.currentUser}
+                      displayedUser={this.state.displayedUser}
                       />
                     </> : 
                     this.state.userNotFound ? <>
