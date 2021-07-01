@@ -44,7 +44,8 @@ Requests are created and accepted off-chain. This is the most cost-effective way
     - [x] Create ENS task
     - [ ] Set profile image
 - [ ] Deploy
-    - [ ] Testnet
+    - [x] Testnet
+        * 1 July 2021 - [Goerli](https://goerli.etherscan.io/tx/0x181f95da7f19df535c98d2c11e6acf8547fbd53d2f9ec35c6a698b72f4f6aa09) - [IPFS](https://bafybeiegqr46dhho3vxwhu3gpfjugkjcyqyyeuqxn7xivwxznl6roiwzwe.ipfs.infura-ipfs.io)
     - [ ] Mainnet or L2
 
 Reach out on Twitter [@stephancill](https://twitter.com/stephancill) if you'd like to help out or make a PR.
