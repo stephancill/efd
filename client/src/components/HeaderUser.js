@@ -81,14 +81,17 @@ function HeaderUser({user, currentUser, provider, efd, refreshUser, refreshCurre
                 <User user={user} addressCopyable={true} miscText={isOwnProfile ? "You" : areFriends ? "Friend" : undefined}></User>
             </div>
             
-            {provider && currentUser && !isOwnProfile && !areFriends ? 
-            <button className="inviteButton" title="Send request" onClick={() => setSendInvite(true)}>
-                {sendInvite ? <div className="spinner"></div> : <PaperAirplaneIcon />}
-            </button> : 
-            areFriends ? 
-            <button className="inviteButton" onClick={() => setRemoveFriend(true)}>
-                {removeFriend ? <div className="spinner"></div> : <XIcon/>}
-            </button> : <></>}
+            <div className="buttonContainer">
+                {provider && currentUser && !isOwnProfile && !areFriends ? 
+                !sendInvite ? <button className="inviteButton" title="Send request" onClick={() => setSendInvite(true)}>
+                   <PaperAirplaneIcon />
+                </button> : <div className="spinner"></div> : 
+                areFriends ? 
+                <button className="inviteButton" onClick={() => setRemoveFriend(true)}>
+                    {removeFriend ? <div className="spinner"></div> : <XIcon/>}
+                </button> : <></>}
+            </div>
+            
         </div>
         
         <div className="headerDetailContainer">

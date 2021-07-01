@@ -22,6 +22,22 @@
     cursor: pointer;
 }
 
+.buttonContainer {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* background-color: black; */
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    color: white;
+}
+
+.buttonContainer .spinner {
+    border-color: black !important;
+    border-left-color: rgba(0, 0, 0, 0) !important;
+}
+
 .sendInviteModal {
     position: absolute;
     width: var(--col-width);
