@@ -60,6 +60,10 @@
     padding-right: 5px;
 }
 
+.inlineUser .address {
+    font-family: 'Roboto Mono', monospace;
+}
+
 .inlineUser img {
     border-radius: 50%;
     padding-right: 2px;

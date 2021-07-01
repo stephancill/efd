@@ -16,9 +16,10 @@ export function User({user, onSelectUser, addressCopyable=false, miscText, inlin
     }).toDataURL()
 
     if (inline) {
+        const isAddress = !user.ens
         return <span className="inlineUser">
             <img alt={user.address} src={user.profileImage ? user.profileImage : iconURL }></img>
-            <span title={user.ens || user.address}>{user.ens ? user.ens : truncateAddress(user.address)}</span>
+            <span className={isAddress ? "address" : ""} title={user.ens || user.address}>{user.ens ? user.ens : truncateAddress(user.address)}</span>
         </span>
     }
 
