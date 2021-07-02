@@ -2,6 +2,8 @@ import React from "react"
 import logo from "./../logo.svg"
 import logoDark from "./../logo-dark.svg"
 import { User } from "./User"
+import { SunIcon } from '@primer/octicons-react'
+import { MoonIcon } from '@primer/octicons-react'
 import { SpinnerButton } from "./Spinner";
 
 export function Nav({connectWallet, isConnectingWallet, currentUser, onSearchSubmit, onSearchChange, searchQuery, onSelectUser, displayedUser, onToggleTheme, theme}) {
@@ -17,8 +19,8 @@ export function Nav({connectWallet, isConnectingWallet, currentUser, onSearchSub
     </div>
 
     <div className="userItemContainer">
-      <div style={{marginLeft: "auto", maxWidth: "var(--col-width)"}}>
-        <button onClick={onToggleTheme}>{theme}</button>
+      <div style={{display: "flex",marginLeft: "auto", maxWidth: "var(--col-width)"}}>
+        <button style={{marginRight: "10px"}} className="inviteButton" onClick={onToggleTheme}>  {theme === "light" ? <MoonIcon size={28}/> : <SunIcon size={28}/>} </button>
         {currentUser ? 
         <User user={currentUser} onSelectUser={onSelectUser} displayedUser={displayedUser}></User> : 
         <SpinnerButton className="actionButton" style={{width: "110px"}} isSpinning={isConnectingWallet} onClick={connectWallet}>Connect</SpinnerButton>}

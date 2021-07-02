@@ -18,6 +18,7 @@
 .inviteButton {
     display: inline-block;
     background-color: rgba(0, 0, 0, 0);
+    color: var(--primary-color-text);
     border: none;
     cursor: pointer;
 }
