@@ -34,6 +34,7 @@ Requests are created and accepted off-chain. This is the most cost-effective way
         - [ ] Route to publish friend confirmation
         - [x] Share request via URL
         - [x] Share request via QR code
+        - [ ] Store invites locally for batch confirm
     - [x] Remove friends
     - [x] View other accounts
     - [ ] UX improvements
