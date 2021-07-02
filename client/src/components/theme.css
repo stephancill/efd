@@ -1,0 +1,21 @@
+.light {
+    --theme-color: #A80000;
+    --theme-page-background: conic-gradient(from 186.78deg at 50% 29.36%, #D7D3E5 0deg, #E5D1CE 46.25deg, #DCD994 115.27deg, #CBE5A9 191.25deg, #B8E5DD 250.77deg, #CFD7E5 341.5deg, #DAD2E5 360deg);
+    --theme-page-text: #111;
+    --primary-color: #858585;
+    --secondary-color: #f0f0f0;
+    color: var(--primary-color-text); 
+    --primary-color-text: black;
+
+}
+
+.dark {
+    --theme-color: #0000A8;
+    --theme-page-background: conic-gradient(from 186.78deg at 50% 29.36%, #3A3D2F 0deg, #434B48 46.25deg, #353969 115.27deg, #413062 191.25deg, #4F2F3F 250.77deg, #463730 341.5deg, #3A3D2F 360deg);
+    --theme-page-text: #FFF;
+    --primary-color: #858585;
+    --secondary-color: #262626;
+    color: var(--primary-color-text); 
+    --primary-color-text: white;
+}
+

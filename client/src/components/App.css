@@ -2,20 +2,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono&display=swap');
 
 :root {
-    --primary-grey: #858585;
-    --secondary-grey: #f0f0f0;
     --col-width: 300px
 }
 
 body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+}
+.App{
+    min-height: 100vh;
     background-color: white;
     margin: 0;
     font-family: 'Roboto', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background: var(--theme-page-background);
     min-height: 100vh;
+    mix-blend-mode: exclusion;
 }
-  
 
 nav {
     display: flex;
@@ -49,20 +56,20 @@ nav .search input {
     padding-left: 8px;
     padding-bottom: 8px;
     font-size: 18px;
-    
-    background-color: var(--secondary-grey);
+    color: var(--primary-color);
+    background-color: var(--secondary-color);
 }
 
 nav .search input::placeholder {
-    color: var(--primary-grey);
+    color: var(--primary-color);
 }
 
 nav .search input:focus {
-    color: black;
+    color: var(--primary-color-text);
 }
 
 h2 {
-    color: var(--primary-grey);
+    color: var(--primary-color);
     font-weight: normal;
 }
 
@@ -72,7 +79,7 @@ h2 {
 }
 
 .card {
-    background-color: var(--secondary-grey);
+    background-color: var(--secondary-color);
     border-radius: 10px;
     width: var(--col-width);
     padding-top: 1px;
