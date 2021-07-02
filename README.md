@@ -40,7 +40,7 @@ Requests are created and accepted off-chain. This is the most cost-effective way
     - [ ] UX improvements
         - [x] Button hover states
         - [x] Button loading states
-        - [ ] Page loading states
+        - [x] Page loading states
         - [ ] Mobile layout
 - [ ] Testing
     - [x] Create ENS task

@@ -85,7 +85,7 @@ export function InvitePage({currentUser, route, userFromAddress, onSelectUser, p
         // eslint-disable-next-line eqeqeq
         fromUser == null || fromUser == undefined ? <div>Invalid invite</div> : <>
             <User user={fromUser} onSelectUser={onSelectUser} addressCopyable={true}></User>
-            <div style={{display: "flex", flexGrow: "1"}} >
+            <div style={{display: "flex", flexGrow: "1", marginTop: "15px"}} >
                 {
                     errorMessage ? errorMessage :
                     invite && invite.toSignature ? 

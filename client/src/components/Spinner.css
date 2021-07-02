@@ -9,7 +9,7 @@
   font-size: 2px;
   position: relative;
   text-indent: -9999em;
-  border-color: rgba(255, 255, 255, 0.2) !important;
+  /* border-color: rgba(255, 255, 255, 0.2) !important; */
   border-left-color: #ffffff !important;
   border-top: 2px solid;
   border-right: 2px solid;

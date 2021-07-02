@@ -3,7 +3,7 @@ import logo from "./../logo.svg"
 import { User } from "./User"
 import { SpinnerButton } from "./Spinner";
 
-export function Nav({connectWallet, isConnectingWallet, currentUser, onSearchSubmit, onSearchChange, searchQuery, onSelectUser, displayedUser}) {
+export function Nav({connectWallet, isConnectingWallet, canConnectWallet, currentUser, onSearchSubmit, onSearchChange, searchQuery, onSelectUser, displayedUser}) {
   return <nav>
     <div style={{textAlign: "left"}} className="navLogo">
       <a href="/"><img src={logo} alt="EFD" /></a>
@@ -19,7 +19,7 @@ export function Nav({connectWallet, isConnectingWallet, currentUser, onSearchSub
       <div style={{marginLeft: "auto", maxWidth: "var(--col-width)"}}>
         {currentUser ? 
         <User user={currentUser} onSelectUser={onSelectUser} displayedUser={displayedUser}></User> : 
-        <SpinnerButton className="actionButton" style={{width: "110px"}} isSpinning={isConnectingWallet} onClick={connectWallet}>Connect</SpinnerButton>}
+        <SpinnerButton disabled={!canConnectWallet} className="actionButton" style={{width: "110px"}} isSpinning={isConnectingWallet} onClick={connectWallet}>Connect</SpinnerButton>}
       </div>
     </div>
     

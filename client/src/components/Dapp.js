@@ -16,6 +16,7 @@ import UserList from "./UserList"
 import InvitePage from "./InvitePage"
 
 import "./App.css"
+import "./Spinner.css"
 
 class Dapp extends React.Component {
   constructor(props) {
@@ -32,7 +33,9 @@ class Dapp extends React.Component {
       userNotFound: false,
       ready: undefined,
       networkError: undefined,
-      isConnectingWallet: false
+      isConnectingWallet: false,
+      canConnectWallet: false,
+      isLoading: false
     }
 
     this.state = this.initialState
@@ -46,13 +49,6 @@ class Dapp extends React.Component {
   }
 
   render() {
-    // Ethereum wallets inject the window.ethereum object. If it hasn't been
-    // injected, we instruct the user to install MetaMask.
-    if (window.ethereum === undefined) {
-      // TODO: Test this
-      return <NoWalletDetected />
-    }
-
     if (this.state.networkError) {
       return <div>{this.state.networkError}</div>
     }
@@ -65,6 +61,7 @@ class Dapp extends React.Component {
       <div className="App">
         <Nav connectWallet={() => this._connectWallet()} 
           isConnectingWallet={this.state.isConnectingWallet}
+          canConnectWallet={this.state.canConnectWallet}
           currentUser={this.state.currentUser}
           displayedUser={this.state.displayedUser}
           searchQuery={this.state.searchQuery}
@@ -113,6 +110,7 @@ class Dapp extends React.Component {
                       displayedUser={this.state.displayedUser}
                       />
                     </> : 
+                    this.state.isLoading ? <div style={{width: "20px", height: "20px"}} className="spinner"></div> :
                     this.state.userNotFound ? <>
                       {route.match.params.addressOrENS} could not be found :/
                     </> : <></>
@@ -156,6 +154,10 @@ class Dapp extends React.Component {
   }
 
   async _hasAccountConnected() {
+    if (!window.ethereum) {
+      return false
+    }
+
     const accounts = await window.ethereum.request({method: "eth_accounts"})
     return accounts.length > 0
   }
@@ -173,7 +175,14 @@ class Dapp extends React.Component {
   }
 
   async _initialize(currentUser) {
-    this._provider = new ethers.providers.Web3Provider(window.ethereum)
+    if (window.ethereum) {
+      this._provider = new ethers.providers.Web3Provider(window.ethereum)
+      this.setState({canConnectWallet: true})
+    } else {
+      // TODO: User should probably select the network somewhere
+      this._provider = new ethers.providers.JsonRpcProvider("https://goerli.infura.io/v3/76f031d8c76c4d32b9b9eaca5240f4ec", "goerli") 
+    }
+
     await this._loadContracts(this._provider)
 
     const isConnected = await this._hasAccountConnected()
@@ -183,16 +192,18 @@ class Dapp extends React.Component {
       }
     }
 
-    window.ethereum.on("accountsChanged", ([newAddress]) => {
-      if (newAddress === undefined) {
-        return this._resetState()
-      }
-      this._connectWallet()
-    })
-    
-    window.ethereum.on("chainChanged", ([networkId]) => {
-      this._resetState()
-    })
+    if (window.ethereum) {
+      window.ethereum.on("accountsChanged", ([newAddress]) => {
+        if (newAddress === undefined) {
+          return this._resetState()
+        }
+        this._connectWallet()
+      })
+      
+      window.ethereum.on("chainChanged", ([networkId]) => {
+        this._resetState()
+      })
+    }
 
     if (isConnected) {
       await this._loadContracts(this._provider.getSigner(0))
@@ -200,7 +211,8 @@ class Dapp extends React.Component {
   }
 
   async _loadContracts(providerOrSigner) {
-    let chainId = await window.ethereum.request({ method: 'eth_chainId' })
+    const network = await this._provider.getNetwork()
+    let chainId = network.chainId
     chainId = parseInt(chainId)
 
     if(!(chainId in deploymentMap.contracts)) {
@@ -251,6 +263,7 @@ class Dapp extends React.Component {
   async _onSearch(e) {
     e.preventDefault()
     this.props.history.push(`/account/${this.state.searchQuery}`)
+    this.setState({searchQuery: "", displayedUser: undefined})
   }
 
   async _onSearchChange(e) {
@@ -268,11 +281,13 @@ class Dapp extends React.Component {
   }
 
   async updateUser(addressOrENS) {
-    
+
     if (this.state.displayedUser && (this.state.displayedUser.address === addressOrENS || this.state.displayedUser.ens === addressOrENS)
     ) {
       return
     }
+
+    this.setState({isLoading: true})
 
     let user
     if (addressOrENS.slice(0,2) === "0x") {
@@ -286,7 +301,8 @@ class Dapp extends React.Component {
       if (!this.state.userNotFound) {
         this.setState({
           userNotFound: true,
-          displayedUser: null
+          displayedUser: null,
+          isLoading: false
         })
       }
       return
@@ -295,7 +311,8 @@ class Dapp extends React.Component {
     this.setState({
       searchQuery: "",
       displayedUser: user, 
-      userNotFound: false
+      userNotFound: false,
+      isLoading: false
     })
   }
 
