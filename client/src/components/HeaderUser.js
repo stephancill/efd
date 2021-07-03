@@ -36,7 +36,6 @@ function HeaderUser({user, currentUser, provider, efd, refreshUser, refreshCurre
                     return
                 }
                 
-
                 const url = `${window.location.protocol}//${window.location.host}/#/invite/${encodedInvite}`
 
                 console.log(url)
