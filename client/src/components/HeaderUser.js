@@ -108,7 +108,7 @@ function HeaderUser({user, currentUser, provider, efd, refreshUser, refreshCurre
                     <User user={user} inline={true}></User>
                     <span>to scan:</span> 
                 </div>
-                <img className="qrImage" src={svgStringToBlob(qr.imageSync(inviteURL, { type: 'svg' })) }></img>
+                <img alt="QR code" className="qrImage" src={svgStringToBlob(qr.imageSync(inviteURL, { type: 'svg' })) }></img>
                 <div className="linkContainer">
                     <span>Or send them this link:</span>
                     <input readOnly={true} value={inviteURL} onClick={(event) => event.target.setSelectionRange(0, event.target.value.length)}/>

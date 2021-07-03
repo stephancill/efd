@@ -307,11 +307,14 @@ class Dapp extends React.Component {
     this.setState({isLoading: true})
 
     let user
-    if (addressOrENS.slice(0,2) === "0x") {
-      // TODO: Validate displayed address
-      user = await this._userFromAddress(addressOrENS)
-    } else {
-      user = await this._userFromENS(addressOrENS)
+    try {
+      if (addressOrENS.slice(0,2) === "0x") {
+        user = await this._userFromAddress(addressOrENS)
+      } else {
+        user = await this._userFromENS(addressOrENS)
+      }
+    } catch (error) {
+      console.log(error)
     }
 
     if (!user) {

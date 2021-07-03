@@ -11,7 +11,7 @@ function UserList({title, users, onSelectUser, emptyMessage, currentUser, displa
             users.length === 0 ? emptyMessage :
             users.map(user => {
                 let isFriend = currentUser && currentUser.friends.map(u => u.address).includes(user.address)
-                let isCurrentUser = currentUser && currentUser.address == user.address
+                let isCurrentUser = currentUser && currentUser.address === user.address
                 
                 return <div key={user.address} style={{paddingBottom: "11px"}}>
                     <User user={user} onSelectUser={onSelectUser} miscText={ !isDisplayingCurrentUser && isFriend ? "Mutual" : isCurrentUser ? "You" : undefined}></User>
