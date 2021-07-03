@@ -16,6 +16,7 @@ import InvitePage from "./InvitePage"
 import ConfirmPage from "./ConfirmPage"
 
 import "./App.css"
+import './theme.css';
 import "./Spinner.css"
 
 class Dapp extends React.Component {
@@ -34,6 +35,7 @@ class Dapp extends React.Component {
       ready: undefined,
       networkError: undefined,
       isConnectingWallet: false,
+      theme: "light" 
       canConnectWallet: false,
       isLoading: false
     }
@@ -43,6 +45,7 @@ class Dapp extends React.Component {
     this._onSearch = this._onSearch.bind(this)
     this._onSearchChange = this._onSearchChange.bind(this)
     this._onSelectUser = this._onSelectUser.bind(this)
+    this._onToggleTheme = this._onToggleTheme.bind(this)
     this._userFromAddress = this._userFromAddress.bind(this)
     this._refreshCurrentUser = this._refreshCurrentUser.bind(this)
     this._refreshDisplayedUser = this._refreshDisplayedUser.bind(this)
@@ -58,16 +61,18 @@ class Dapp extends React.Component {
     }
 
     return (
-      <div className="App">
+      <div className={`App ${this.state.theme}`} >
         <Nav connectWallet={() => this._connectWallet()} 
           isConnectingWallet={this.state.isConnectingWallet}
           canConnectWallet={this.state.canConnectWallet}
           currentUser={this.state.currentUser}
           displayedUser={this.state.displayedUser}
           searchQuery={this.state.searchQuery}
+          theme={this.state.theme}
           onSearchChange={this._onSearchChange}
           onSearchSubmit={this._onSearch}
           onSelectUser={this._onSelectUser} 
+          onToggleTheme={this._onToggleTheme}
         />
           <Switch>
             <Route path="/invite/:encodedInvite" render={(route) => {
@@ -271,6 +276,10 @@ class Dapp extends React.Component {
       resolverInterface,
       ready: true
     })
+  }
+
+  _onToggleTheme() {
+    this.setState({theme: this.state.theme === "light" ? "dark" : "light"})
   }
 
   async _onSelectUser(user) {

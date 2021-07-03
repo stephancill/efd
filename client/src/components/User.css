@@ -46,7 +46,7 @@
     display: inline-block;
     font-size: 12px;
     font-family: 'Roboto Mono', monospace;
-    color: var(--primary-grey);
+    color: var(--primary-color);
     
 }
 
@@ -54,7 +54,7 @@
     display: inline-block;
     font-size: 10px;
     font-family: 'Roboto';
-    background-color: var(--primary-grey);
+    background-color: var(--primary-color);
     color: white;
     padding-left: 4px;
     padding-right: 4px;
