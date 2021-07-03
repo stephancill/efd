@@ -9,11 +9,11 @@ import ReverseRecordsArtifact from "../artifacts/@ensdomains/reverse-records/con
 import ENSRegistryArtifact from "../artifacts/@ensdomains/ens/contracts/ENSRegistry.sol/ENSRegistry.json"
 import ResolverArtifact from "../artifacts/@ensdomains/resolver/contracts/Resolver.sol/Resolver.json"
 
-import { NoWalletDetected } from "./NoWalletDetected"
 import { Nav } from "./Nav"
 import HeaderUser from "./HeaderUser"
 import UserList from "./UserList"
 import InvitePage from "./InvitePage"
+import ConfirmPage from "./ConfirmPage"
 
 import "./App.css"
 import "./Spinner.css"
@@ -83,6 +83,23 @@ class Dapp extends React.Component {
                   history={this.props.history}
                   >
                 </InvitePage>
+              </div>
+              
+            }}/>
+
+            <Route path="/confirm/:encodedInvite" render={(route) => {
+              return <div style={{display: "flex", justifyContent: "center", marginTop: "50px"}}>
+                <ConfirmPage 
+                  currentUser={this.state.currentUser} 
+                  route={route} 
+                  userFromAddress={this._userFromAddress} 
+                  onSelectUser={this._onSelectUser} 
+                  provider={this._provider}
+                  efd={this.state.efd}
+                  refreshCurrentUser={this._refreshCurrentUser}
+                  history={this.props.history}
+                  >
+                </ConfirmPage>
               </div>
               
             }}/>
@@ -345,7 +362,7 @@ class Dapp extends React.Component {
     return {
       ens: ensMapping[address],
       friends: adj.map(a => {return {ens: ensMapping[a], address: a.toLowerCase()}}),
-      address
+      address: address.toLowerCase()
     }
   }
 

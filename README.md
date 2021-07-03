@@ -31,7 +31,7 @@ Requests are created and accepted off-chain. This is the most cost-effective way
     - [ ] Requests
         - [x] Create signature that you can send to someone 
         - [x] Route to sign request to accept
-        - [ ] Route to publish friend confirmation
+        - [x] Route to publish friend confirmation
         - [x] Share request via URL
         - [x] Share request via QR code
         - [ ] Store invites locally for batch confirm
