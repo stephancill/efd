@@ -6,7 +6,7 @@ import { SunIcon } from '@primer/octicons-react'
 import { MoonIcon } from '@primer/octicons-react'
 import { SpinnerButton } from "./Spinner";
 
-export function Nav({connectWallet, isConnectingWallet, currentUser, onSearchSubmit, onSearchChange, searchQuery, onSelectUser, displayedUser, onToggleTheme, theme}) {
+export function Nav({connectWallet, isConnectingWallet, canConnectWallet, currentUser, onSearchSubmit, onSearchChange, searchQuery, onSelectUser, displayedUser, onToggleTheme, theme}) {
   return <nav>
     <div style={{textAlign: "left"}} className="navLogo">
       <a href="/"><img src={theme === "light" ? logo : logoDark} alt="EFD" /></a>
