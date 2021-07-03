@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react"
 import User from "./User"
-import { acceptRequest } from "../util"
+import { decodeEncodedObject, createConfirmableObject } from "../util"
 import "./InvitePage.css"
 import { SpinnerButton } from "./Spinner"
 
@@ -33,18 +33,17 @@ export function InvitePage({currentUser, route, userFromAddress, onSelectUser, p
         (async function init() {
             if (!fromUser && currentUser) {
                 try {
-                    // TODO: Extract encode/decode invite code into utils and write tests
-                    const inviteJSONString = atob(route.match.params.encodedInvite)
-                    const inviteJSON = JSON.parse(inviteJSONString)
+                    const inviteJSON = decodeEncodedObject(route.match.params.encodedInvite)
                     const user = await userFromAddress(inviteJSON.fromAddress)
 
                     setFromUser(user)
-                    setInvite(inviteJSON)
-
+            
                     if (inviteJSON.toAddress.toLowerCase() !== currentUser.address.toLowerCase()) {
                         setErrorMessage("Invite is addressed to a different user")
                         return
                     }
+
+                    setInvite(inviteJSON)
                 } catch (error) {
                     console.error(error)
                     setFromUser(null)
@@ -53,13 +52,13 @@ export function InvitePage({currentUser, route, userFromAddress, onSelectUser, p
             }
         })()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentUser])
+    }, [currentUser, invite])
 
     const acceptInvite = async () => {
         setIsAccepting(true)
         try {
-            const signature = await acceptRequest(invite.fromAddress, provider.getSigner(currentUser.address), invite.fromSignature, efd)
-            setInvite({...invite, toSignature: signature})
+            const confirmableInvite = await createConfirmableObject(invite, provider.getSigner(0), efd)
+            setInvite(confirmableInvite)
         } catch(error) {
             console.error(error)
         }
@@ -83,7 +82,7 @@ export function InvitePage({currentUser, route, userFromAddress, onSelectUser, p
         {currentUser == null ? <div>Not connected</div> : 
         isLoading ? <div>Loading...</div> : 
         // eslint-disable-next-line eqeqeq
-        fromUser == null || fromUser == undefined ? <div>Invalid invite</div> : <>
+        fromUser == null ? <div>Invalid invite</div> : <>
             <User user={fromUser} onSelectUser={onSelectUser} addressCopyable={true}></User>
             <div style={{display: "flex", flexGrow: "1", marginTop: "15px"}} >
                 {

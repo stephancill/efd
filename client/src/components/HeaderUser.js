@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react"
 import User from "./User"
 import "./HeaderUser.css"
-import { createRequest } from "../util"
+import { createInviteObject, encodeObject } from "../util"
 import { PaperAirplaneIcon , XIcon, LinkIcon } from '@primer/octicons-react'
 import ReactModal from "react-modal"
 import qr from "qr-image"
@@ -26,24 +26,17 @@ function HeaderUser({user, currentUser, provider, efd, refreshUser, refreshCurre
     useEffect(() => {
         if (sendInvite) {
             (async () => {
-                let hash
+                let encodedInvite
                 try {
-                    hash = await createRequest(provider.getSigner(0), user.address, efd)
+                    const invite = await createInviteObject(provider.getSigner(0), user.address, efd)
+                    encodedInvite = encodeObject(invite)
                 } catch (error) {
                     console.error(error)
                     setSendInvite(false)
                     return
                 }
-
-                const inviteJSON = {
-                    fromAddress: currentUser.address,
-                    toAddress: user.address,
-                    fromSignature: hash
-                }
-
-                const inviteJSONString = JSON.stringify(inviteJSON)
-                const encodedInvite = btoa(inviteJSONString)
                 
+
                 const url = `${window.location.protocol}//${window.location.host}/#/invite/${encodedInvite}`
 
                 console.log(url)

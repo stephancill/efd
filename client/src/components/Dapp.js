@@ -335,12 +335,11 @@ class Dapp extends React.Component {
     const [adj] = await this.state.efd.getAdj(address)
     const allAddresses = [address, ...adj]
     const allNames = await this.state.reverseRecords.getNames(allAddresses) // TODO: Some kind of caching
-    // const validNames = allNames.filter((n) => namehash.normalize(n) === n)
-    // TODO: Reverse lookup all names
      
     const ensMapping = {}
     allAddresses.forEach((a, i) => {
-      ensMapping[a] = allNames[i] || null
+      const name = allNames[i]
+      ensMapping[a] = name && namehash.normalize(name) === name ? name : null
     })
 
     return {
