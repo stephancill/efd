@@ -23,7 +23,7 @@ export function Nav({connectWallet, isConnectingWallet, currentUser, onSearchSub
         <button style={{marginRight: "10px"}} className="inviteButton" onClick={onToggleTheme}>  {theme === "light" ? <MoonIcon size={28}/> : <SunIcon size={28}/>} </button>
         {currentUser ? 
         <User user={currentUser} onSelectUser={onSelectUser} displayedUser={displayedUser}></User> : 
-        <SpinnerButton className="actionButton" style={{width: "110px"}} isSpinning={isConnectingWallet} onClick={connectWallet}>Connect</SpinnerButton>}
+        <SpinnerButton disabled={!canConnectWallet} className="actionButton" style={{width: "110px"}} isSpinning={isConnectingWallet} onClick={connectWallet}>Connect</SpinnerButton>}
       </div>
     </div>
     

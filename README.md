@@ -34,12 +34,13 @@ Requests are created and accepted off-chain. This is the most cost-effective way
         - [ ] Route to publish friend confirmation
         - [x] Share request via URL
         - [x] Share request via QR code
+        - [ ] Store invites locally for batch confirm
     - [x] Remove friends
     - [x] View other accounts
     - [ ] UX improvements
         - [x] Button hover states
         - [x] Button loading states
-        - [ ] Page loading states
+        - [x] Page loading states
         - [ ] Mobile layout
 - [ ] Testing
     - [x] Create ENS task
@@ -47,7 +48,7 @@ Requests are created and accepted off-chain. This is the most cost-effective way
 - [ ] Deploy
     - [x] Testnet
         * 1 July 2021 - [Goerli](https://goerli.etherscan.io/tx/0x181f95da7f19df535c98d2c11e6acf8547fbd53d2f9ec35c6a698b72f4f6aa09) - [IPFS](https://bafybeiegqr46dhho3vxwhu3gpfjugkjcyqyyeuqxn7xivwxznl6roiwzwe.ipfs.infura-ipfs.io) - [commit](https://github.com/stephancill/efd/commit/333229e64680e9807d2e7b300e948e3d4ae3679a)
-    - [ ] Mainnet or L2
+    - [ ] Mainnet or L2 - [Issue](https://github.com/stephancill/efd/issues/9)
 - [ ] Growth/adoption
     - [ ] Properly document contract call
     - [ ] Sample code for Infura and Alchemy

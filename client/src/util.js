@@ -14,4 +14,35 @@ async function acceptRequest(fromAddress, toAccount, requestSignature, efd) {
   return signature
 }
 
-module.exports = {acceptRequest, createRequest}
+// TODO: Test these methods
+async function createInviteObject(fromAccount, toAddress, efd) {
+  const fromSignature = await createRequest(fromAccount, toAddress, efd)
+  const fromAddress = await fromAccount.getAddress()
+  return {
+    fromAddress,
+    toAddress,
+    fromSignature
+  }
+}
+
+async function createConfirmableObject(inviteObject, toAccount, efd) {
+  const toSignature = await acceptRequest(inviteObject.fromAddress, toAccount, inviteObject.fromSignature, efd)
+  return {
+    ...inviteObject,
+    toSignature
+  }
+}
+
+function encodeObject(obj) {
+  const objString = JSON.stringify(obj)
+  const encodedString = btoa(objString)
+  return encodedString
+}
+
+function decodeEncodedObject(encodedObj) {
+  const objString = atob(encodedObj)
+  const obj = JSON.parse(objString)
+  return obj
+}
+
+module.exports = {acceptRequest, createRequest, createInviteObject, createConfirmableObject, encodeObject, decodeEncodedObject}
