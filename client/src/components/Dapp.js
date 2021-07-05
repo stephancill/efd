@@ -18,6 +18,13 @@ import ConfirmPage from "./ConfirmPage"
 import "./App.css"
 import "./Spinner.css"
 
+async function getChainId(provider) {
+  const network = await provider.getNetwork()
+  let chainId = network.chainId
+  chainId = parseInt(chainId)
+  return chainId
+}
+
 class Dapp extends React.Component {
   constructor(props) {
     super(props)
@@ -194,10 +201,14 @@ class Dapp extends React.Component {
   async _initialize(currentUser) {
     if (window.ethereum) {
       this._provider = new ethers.providers.Web3Provider(window.ethereum)
+      const chainId = await getChainId(this._provider)
+      // TODO: Add other L2 chain Ids (map L2 chain ID to L1 chain ID)
+      this._ensProvider = chainId === 69 ? ethers.getDefaultProvider("goerli") : this._provider // Only use other provider when on L2 
       this.setState({canConnectWallet: true})
     } else {
       // TODO: User should probably select the network somewhere
-      this._provider = new ethers.providers.JsonRpcProvider("https://goerli.infura.io/v3/76f031d8c76c4d32b9b9eaca5240f4ec", "goerli") 
+      this._provider = new ethers.providers.JsonRpcProvider("https://goerli.infura.io/v3/76f031d8c76c4d32b9b9eaca5240f4ec", "goerli") // L2
+      this._ensProvider = new ethers.providers.JsonRpcProvider("https://goerli.infura.io/v3/76f031d8c76c4d32b9b9eaca5240f4ec", "goerli") // L1
     }
 
     await this._loadContracts(this._provider)
@@ -228,9 +239,8 @@ class Dapp extends React.Component {
   }
 
   async _loadContracts(providerOrSigner) {
-    const network = await this._provider.getNetwork()
-    let chainId = network.chainId
-    chainId = parseInt(chainId)
+    const chainId = await getChainId(this._provider)
+    const ensChainId = await getChainId(this._ensProvider)
 
     if(!(chainId in deploymentMap.contracts)) {
       this.setState({ 
@@ -246,22 +256,21 @@ class Dapp extends React.Component {
     )
 
     const reverseRecords = new ethers.Contract(
-      deploymentMap.contracts[chainId].ReverseRecords[0],
+      deploymentMap.contracts[ensChainId].ReverseRecords[0],
       ReverseRecordsArtifact.abi,
-      providerOrSigner
+      this._ensProvider
     )
 
-    
     const ensRegistry = new ethers.Contract(
-      deploymentMap.contracts[chainId].ENS[0],
+      deploymentMap.contracts[ensChainId].ENS[0],
       ENSRegistryArtifact.abi,
-      providerOrSigner
+      this._ensProvider
     )
 
     const resolverInterface = new ethers.Contract(
-      deploymentMap.contracts[chainId].PublicResolver[0],
+      deploymentMap.contracts[ensChainId].PublicResolver[0],
       ResolverArtifact.abi, 
-      providerOrSigner
+      this._ensProvider
     )
 
     this.setState({
