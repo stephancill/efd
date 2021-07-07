@@ -9,5 +9,8 @@ reports/
 node_modules
 *.dbg.json
 artifacts/
+artifacts-ovm/
 *cache.*
 credentials.json
+yarn-error.log
+cache/console-history.txt

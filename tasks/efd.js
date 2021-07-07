@@ -3,34 +3,38 @@ const {createRequest, acceptRequest} = require("../client/src/util")
 const path = require("path")
 const deploymentMap = require(path.resolve(__dirname, "../client/src/deployments/map.json"))
 
-async function getEFD() {
-  const chainId = deploymentMap.chains[network.name]
+async function getEFD(chainId) {
+  chainId = chainId || deploymentMap.chains[network.name]
   const address = deploymentMap.contracts[chainId]["EthereumFriendDirectory"][0]
   const artifact = await ethers.getContractFactory("EthereumFriendDirectory")
   const efd = artifact.attach(address)
   return efd
 }
 
-async function getFriends(address) {
-  const efd = await getEFD()
-  const user = await ethers.getSigner(address)
+async function getFriends(address, user) {
+  const chainId = user ? await user.getChainId() : undefined
+  const efd = await getEFD(chainId)
+  user = user || await ethers.getSigner(address)
 
-  const [adj, _] = await efd.connect(user).getAdj(address)
-  
+  const [adj] = await efd.connect(user).getAdj(address)
+
   return adj
 }
 
 async function addFriend(account1, account2) {
-  const efd = await getEFD()
+  const chainId = await account1.getChainId()
+  let efd = await getEFD(chainId)
+  efd = efd.connect(account1)
 
-  const senderSignature = await createRequest(account1, account2.address, efd)
-  const acceptSignature = await acceptRequest(account1.address, account2, senderSignature, efd)
+  const account1Address = await account1.getAddress()
+  const account2Address = await account2.getAddress()
 
-  await efd.connect(account1).confirmRequest(account1.address, account2.address, senderSignature, acceptSignature)
+  const senderSignature = await createRequest(account1, account2Address, efd)
+  const acceptSignature = await acceptRequest(account1Address, account2, senderSignature, efd)
+
+  const tx = await efd.connect(account1).confirmRequest(account1Address, account2Address, senderSignature, acceptSignature)
+  await tx.wait()
 }
-
-
-
 
 
 module.exports = {

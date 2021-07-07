@@ -30,13 +30,19 @@ async function registerENS(name, address, network) {
   // Reverse record can be set by the record owner
   let reverseResolver = await contractFromMap("ReverseRegistrar", "ReverseRegistrar", network, user)
 
-  await ens.setSubnodeOwner(namehash.hash(tld), web3.utils.sha3(name), owner.address)
-  await ens.setResolver(hashedname, resolver.address)
-  await resolver["setAddr(bytes32,address)"](hashedname, address)
+  tx = await ens.setSubnodeOwner(namehash.hash(tld), web3.utils.sha3(name), owner.address)
+  await tx.wait()
+  
+  tx = await ens.setResolver(hashedname, resolver.address)
+  await tx.wait()
+  
+  tx = await resolver["setAddr(bytes32,address)"](hashedname, address)
+  await tx.wait()
   
   let res1 = await resolver["addr(bytes32)"](hashedname)
   console.log(res1, "==", address)
-  await reverseResolver.setName(`${name}.eth`)
+  tx = await reverseResolver.setName(`${name}.eth`)
+  await tx.wait()
   let res2 = await resolver.name(namehash.hash(`${address.slice(2)}.addr.reverse`))
   console.log(res2, "==", `${name}.eth`)
 }

@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.0;
+pragma solidity >0.7.0;
 
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
+import "@openzeppelin/contracts/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/EnumerableSet.sol";
 
 contract EthereumFriendDirectory {
     using ECDSA for *;
     using EnumerableSet for EnumerableSet.AddressSet;
-    using SignatureChecker for *;
 
     mapping (address=>EnumerableSet.AddressSet) adj;
 
@@ -27,10 +25,10 @@ contract EthereumFriendDirectory {
         require(fromAddress != toAddress, "Addresses cannot be the same");
 
         bytes32 requestHash = hashRequest(fromAddress, toAddress).toEthSignedMessageHash();   
-        require(SignatureChecker.isValidSignatureNow(fromAddress, requestHash, senderSig), "Invalid sender");
+        require(ECDSA.recover(requestHash, senderSig) == fromAddress, "Invalid sender");
 
         bytes32 acceptHash = hashAccept(fromAddress, toAddress, senderSig).toEthSignedMessageHash();
-        require(SignatureChecker.isValidSignatureNow(toAddress, acceptHash, acceptorSig), "Invalid acceptor");
+        require(ECDSA.recover(acceptHash, acceptorSig) == toAddress, "Invalid acceptor");
 
         emit Confirmed(fromAddress, toAddress);
 

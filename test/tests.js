@@ -5,8 +5,9 @@ const {createRequest, acceptRequest} = require("../client/src/util")
 
 async function deployContract() {
   const EFD = await ethers.getContractFactory("EthereumFriendDirectory");
-  const efd = await EFD.deploy();
-  await efd.deployed();
+  // const efd = await EFD.deploy();
+  // await efd.deployed();
+  const efd = await EFD.attach("0xc6e7DF5E7b4f2A278906862b61205850344D4e7d")
   return efd
 }
 
