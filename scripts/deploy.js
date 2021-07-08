@@ -1,4 +1,4 @@
-const { network, ethers } = require("hardhat")
+const { ethers } = require("hardhat")
 const { saveDeployment } = require("./common")
 
 async function main() {

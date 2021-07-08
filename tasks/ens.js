@@ -3,7 +3,7 @@ const path = require("path")
 const deploymentMap = require(path.resolve(__dirname, "../client/src/deployments/map.json"))
 const web3 = require("web3")
 const namehash = require("eth-ens-namehash")
-const { ethers, artifacts } = require("hardhat")
+const { ethers } = require("hardhat")
 
 async function registerENS(name, address, network) {
 
@@ -48,7 +48,7 @@ async function registerENS(name, address, network) {
 }
 
 async function contractFromMap(name, artifactName, network, user) {
-  const chainId = deploymentMap.chains[network.name]
+  const chainId = network.chainId
   const address = deploymentMap.contracts[chainId][name][0]
   
   const artifact = await ethers.getContractFactory(artifactName, user)

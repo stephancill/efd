@@ -5,17 +5,19 @@ require("@eth-optimism/hardhat-ovm")
 require("@nomiclabs/hardhat-web3");
 
 
+const { task } = require("hardhat/config");
 const commonConfig = require("./common.hardhat.config")
-
 const credentials = require("./credentials.json")
 
-task("accounts", "Prints the list of accounts", async () => {
-  const accounts = await ethers.getSigners();
-
-  for (const account of accounts) {
-    console.log(account.address);
-  }
-});
+task("wallets", "Prints the list of accounts", async () => {
+  const {wallets} = require("./tasks/wallets")
+  wallets.forEach((w, i) => {
+    console.log(`Address #${i}`)
+    console.log(`Address: ${w.address}`)
+    console.log(`Private key: ${w.privateKey}`)
+    console.log("\n")
+  })
+})
 
 task("ens", "Registers and ENS handle")
   .addParam("name", "The desired ENS domain")
@@ -60,7 +62,7 @@ module.exports = {
   networks: {
     goerli: {
       url: `https://eth-goerli.alchemyapi.io/v2/${credentials.ALCHEMYAPI_SECRET}`,
-      accounts: [`${credentials.DEPLOYER_PRIVATE_KEY}`]
+      // accounts: [`${credentials.DEPLOYER_PRIVATE_KEY}`]
     },
     optimism: {
       url: 'http://127.0.0.1:8545',

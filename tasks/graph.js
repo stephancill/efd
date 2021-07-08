@@ -1,8 +1,8 @@
-const { ethers, network, web3, Web3 } = require("hardhat")
+const { ethers } = require("hardhat")
 const {registerENS} = require("./ens")
-const casual = require('casual');
-const { addFriend, getFriends } = require("./efd");
-const { OptimismProvider } = require("@eth-optimism/provider") // TODO: Use optimismprovider
+const casual = require('casual')
+const { addFriend, getFriends } = require("./efd")
+const { wallets } = require("./wallets")
 
 async function synchronouslyExecute(promiseFunctions) {
   for (const p of promiseFunctions) {
@@ -11,24 +11,21 @@ async function synchronouslyExecute(promiseFunctions) {
 }
 
 async function randomGraph() {
-
-  const accounts = await ethers.provider.listAccounts();
-
-  const web3Provider = new ethers.providers.Web3Provider(web3.currentProvider)
-  const l1Provider = new ethers.providers.Web3Provider(web3.currentProvider)
-  const l2Provider = new OptimismProvider("http://localhost:8545", web3Provider) // This needs to point to http://localhost:8545
+  const l1Provider = new ethers.providers.JsonRpcProvider("http://localhost:9545")
+  const l2Provider = new ethers.providers.JsonRpcProvider("http://localhost:8545")
 
   await Promise.all([l1Provider.getNetwork(), l2Provider.getNetwork()])
 
-  const l1Accounts = await Promise.all(accounts.map(a => l1Provider.getSigner(a)))
-  const l2Accounts = await Promise.all(accounts.map(a => l2Provider.getSigner(a)))
+  const l1Accounts = wallets.map(w => w.connect(l1Provider))
+  const l2Accounts = wallets.map(w => w.connect(l2Provider))
 
   // 1. Register ENS for all accounts
+  const l1Network = await l1Provider.getNetwork()
   let ensPromises = l1Accounts.slice(0, Math.round(l1Accounts.length/2)).map((a) => async () => {
     const name = `${casual.first_name}${casual.last_name}`.toLowerCase()
     const address = a.address
     console.log(name, address)
-    await registerENS(name, address, network)
+    await registerENS(name, address, l1Network)
   })
 
   await synchronouslyExecute(ensPromises)

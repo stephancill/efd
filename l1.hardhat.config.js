@@ -54,7 +54,7 @@ module.exports = {
   networks: {
     goerli: {
       url: `https://eth-goerli.alchemyapi.io/v2/${credentials.ALCHEMYAPI_SECRET}`,
-      accounts: [`${credentials.DEPLOYER_PRIVATE_KEY}`]
+      // accounts: [`${credentials.DEPLOYER_PRIVATE_KEY}`]
     },
     ...commonConfig.networks
   },

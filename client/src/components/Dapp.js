@@ -4,7 +4,10 @@ import { ethers } from "ethers"
 import namehash from "eth-ens-namehash"
 
 import deploymentMap from "../deployments/map.json"
+import constants from "../constants"
+
 import EFDArtifact from "../artifacts/contracts/EthereumFriendDirectory.sol/EthereumFriendDirectory.json"
+import EFDL2Artifact from "../artifacts-ovm/contracts/EthereumFriendDirectory.sol/EthereumFriendDirectory.json"
 import ReverseRecordsArtifact from "../artifacts/@ensdomains/reverse-records/contracts/ReverseRecords.sol/ReverseRecords.json"
 import ENSRegistryArtifact from "../artifacts/@ensdomains/ens/contracts/ENSRegistry.sol/ENSRegistry.json"
 import ResolverArtifact from "../artifacts/@ensdomains/resolver/contracts/Resolver.sol/Resolver.json"
@@ -129,7 +132,7 @@ class Dapp extends React.Component {
                       title="Friends" 
                       users={this.state.displayedUser.friends} 
                       onSelectUser={this._onSelectUser} 
-                      emptyMessage={"Nothing to see here (yet!)"}
+                      emptyMessage={"Nothing to see here (yet)"}
                       currentUser={this.state.currentUser}
                       displayedUser={this.state.displayedUser}
                       />
@@ -202,8 +205,7 @@ class Dapp extends React.Component {
     if (window.ethereum) {
       this._provider = new ethers.providers.Web3Provider(window.ethereum)
       const chainId = await getChainId(this._provider)
-      // TODO: Add other L2 chain Ids (map L2 chain ID to L1 chain ID)
-      this._ensProvider = chainId === 69 ? ethers.getDefaultProvider("goerli") : this._provider // Only use other provider when on L2 
+      this._ensProvider = constants.l2ChainIds.includes(chainId) ? new ethers.providers.JsonRpcProvider("http://localhost:9545") : this._provider // TODO: Mainnet or debug
       this.setState({canConnectWallet: true})
     } else {
       // TODO: User should probably select the network somewhere
@@ -242,7 +244,9 @@ class Dapp extends React.Component {
     const chainId = await getChainId(this._provider)
     const ensChainId = await getChainId(this._ensProvider)
 
-    if(!(chainId in deploymentMap.contracts)) {
+    console.log(chainId, ensChainId)
+
+    if(!(chainId in deploymentMap.contracts) || !(ensChainId in deploymentMap.contracts)) {
       this.setState({ 
         networkError: "Contracts not deployed on this network."
       })
@@ -251,7 +255,7 @@ class Dapp extends React.Component {
 
     const efd = new ethers.Contract(
       deploymentMap.contracts[chainId].EthereumFriendDirectory[0],
-      EFDArtifact.abi,
+      constants.l2ChainIds.includes(chainId) ? EFDL2Artifact.abi : EFDArtifact.abi,
       providerOrSigner
     )
 
